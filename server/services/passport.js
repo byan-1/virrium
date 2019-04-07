@@ -25,7 +25,6 @@ passport.use(
         validation_data: profile.id
       });
       if (existingUser) {
-        console.log(existingUser);
         done(null, existingUser);
       } else {
         const user = await User.query().insertGraphAndFetch({
