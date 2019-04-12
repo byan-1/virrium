@@ -7,7 +7,7 @@ module.exports = {
       host: '127.0.0.1',
       user: keys.user,
       password: keys.password,
-      database: 'mindpouch'
+      database: keys.dbName
     },
     migrations: {
       directory: './migrations'

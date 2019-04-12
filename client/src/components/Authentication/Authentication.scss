@@ -1,7 +1,17 @@
 .size1 {
-  padding-right: 35px;
+  padding-right: 43px;
 }
 
-.button {
-  margin: 0.1em;
+.marginbtm {
+  margin-bottom: 20px;
+}
+
+.margintop {
+  margin-top: 35px;
+}
+
+.vcenter {
+  display: flex;
+  align-items: center;
+  height: 80vh;
 }
