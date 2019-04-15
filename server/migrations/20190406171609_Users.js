@@ -1,17 +1,44 @@
-exports.up = function(knex, Promise) {
-  return Promise.all([
-    knex.schema.createTable('users', function(table) {
-      table.increments('id').primary();
-      table
-        .string('email')
-        .unique()
-        .notNullable();
-      table.string('account_type').notNullable();
-      table.string('validation_data').notNullable();
-    })
-  ]);
+exports.up = async function(knex) {
+  await knex.raw(
+    `
+      CREATE TABLE users(
+        id SERIAL PRIMARY KEY
+      );
+    `
+  );
+
+  await knex.raw(
+    `
+      CREATE TABLE gauth(
+        uid integer REFERENCES users (id) PRIMARY KEY,
+        googleID varchar(64)
+      );
+    `
+  );
+
+  await knex.raw(
+    `
+      CREATE TABLE fbauth(
+        uid integer REFERENCES users (id) PRIMARY KEY,
+        fbID varchar(64)
+      );
+    `
+  );
+
+  await knex.raw(
+    `
+      CREATE TABLE emailauth(
+        uid integer REFERENCES users (id) PRIMARY KEY,
+        email varchar(64),
+        password varchar(64)
+      );
+    `
+  );
 };
 
-exports.down = function(knex) {
-  return knex.schema.dropTable('validation');
+exports.down = async function(knex) {
+  await knex.schema.dropTable('gauth');
+  await knex.schema.dropTable('fbauth');
+  await knex.schema.dropTable('emailauth');
+  await knex.schema.dropTable('users');
 };

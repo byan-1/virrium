@@ -7,23 +7,24 @@ import { Link } from 'react-router-dom';
 class Header extends Component {
   renderAuth() {
     switch (this.props.auth) {
+      case null:
+        return;
       case false:
         return (
           <Link className="navbar-item" to="/signin">
             Sign In
           </Link>
         );
-      case true:
-        return (
-          <Link className="navbar-item" to="/auth/signout">
-            Sign Out
-          </Link>
-        );
       default:
-        return;
+        return (
+          <a className="navbar-item" href="/auth/logout">
+            Sign Out
+          </a>
+        );
     }
   }
   render() {
+    console.log(this.props.auth)
     return (
       <nav className="navbar is-spaced">
         <div className="navbar-menu is-active">
@@ -35,7 +36,7 @@ class Header extends Component {
 }
 
 Header.propTypes = {
-  auth: PropTypes.oneOfType([PropTypes.object], PropTypes.bool)
+  auth: PropTypes.oneOfType([PropTypes.object, PropTypes.bool])
 };
 
 function mapStateToProps({ auth }) {

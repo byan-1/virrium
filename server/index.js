@@ -11,17 +11,18 @@ require('./services/passport');
 
 const app = express()
   .use(bodyParser.json())
-  .use(morgan('combined'))
   .use(
     cookieSession({
       maxAge: 30 * 24 * 60 * 60 * 1000,
       keys: [keys.cookieKey]
     })
   )
+  .use(morgan('combined'))
   .use(passport.initialize())
   .use(passport.session())
   .use(router);
 
+  
 Model.knex(knex);
 
 const PORT = process.env.PORT || 5000;
