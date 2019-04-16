@@ -6,6 +6,7 @@ const keys = require('../config/keys');
 const User = require('../models/User');
 const GAuth = require('../models/GAuth');
 const FBAuth = require('../models/FBAuth');
+const EmailAuth = require('../models/EmailAuth');
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -62,6 +63,22 @@ passport.use(
         await user.$relatedQuery('facebookauth').insert({ fbid: profile.id });
         done(null, user);
       }
+    }
+  )
+);
+
+passport.use(
+  new LocalStrategy(
+    { usernameField: 'email' },
+    async (email, password, done) => {
+      const existingUser = await EmailAuth.query().findOne({ email });
+      if (!existingUser) {
+        return done(null, false, { message: 'Incorrect username.' });
+      }
+      if (!existingUser.validPassword(password)) {
+        return done(null, false, { message: 'Incorrect password.' });
+      }
+      return done(null, { id: existingUser.uid });
     }
   )
 );

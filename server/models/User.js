@@ -7,7 +7,8 @@ class User extends Model {
 
   static get relationMappings() {
     const GAuth = require('./GAuth');
-    const FBauth = require('./FBAuth');
+    const FBAuth = require('./FBAuth');
+    const EmailAuth = require('./EmailAuth');
     return {
       googleauth: {
         relation: Model.HasOneRelation,
@@ -19,10 +20,18 @@ class User extends Model {
       },
       facebookauth: {
         relation: Model.HasOneRelation,
-        modelClass: FBauth,
+        modelClass: FBAuth,
         join: {
           from: 'users.id',
           to: 'fbauth.uid'
+        }
+      },
+      eauth: {
+        relation: Model.HasOneRelation,
+        modelClass: EmailAuth,
+        join: {
+          from: 'users.id',
+          to: 'emailauth.uid'
         }
       }
     };
