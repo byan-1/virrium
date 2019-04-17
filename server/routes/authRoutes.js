@@ -1,5 +1,6 @@
 const express = require('express');
 const passport = require('passport');
+const User = require('../models/User');
 const EmailAuth = require('../models/EmailAuth');
 
 const router = express.Router();
@@ -29,7 +30,7 @@ router.get(
   })
 );
 
-router.get('/signup', async (req, res) => {
+router.post('/signup', async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
 
@@ -43,11 +44,18 @@ router.get('/signup', async (req, res) => {
     return;
   }
 
-  const user = await EmailAuth.query()
-    .insert({ email, password })
+  const user = await User.query()
+    .insert({})
     .returning('*');
-  req.login({ id: user.uid });
-  res.redirect('/dashboard');
+
+  await user.$relatedQuery('eauth').insert({ email, password });
+
+  req.login({ id: user.id }, err => {
+    if (err) {
+      return next(err);
+    }
+    return res.send({ id: user.id });
+  });
 });
 
 router.get('/current_user', (req, res) => {

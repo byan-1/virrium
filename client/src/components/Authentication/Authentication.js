@@ -1,5 +1,6 @@
-import "./Authentication.scss";
-import React, { Component } from "react";
+import './Authentication.scss';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 class Authentication extends Component {
   render() {
@@ -7,7 +8,9 @@ class Authentication extends Component {
       <section className="section vcenter">
         <div className="container is-widescreen">
           <h1 className="title">Neutriv</h1>
-          <h2 className="subtitle">Don&apos;t have an account? Sign up here</h2>
+          <h2 className="subtitle">
+            Don&apos;t have an account? <Link to="/signup">Sign up here</Link>
+          </h2>
           <div className="columns">
             <div className="column">
               <div>

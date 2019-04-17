@@ -2,7 +2,7 @@ import './Header.scss';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 class Header extends Component {
   renderAuth() {
@@ -23,8 +23,8 @@ class Header extends Component {
         );
     }
   }
+
   render() {
-    console.log(this.props.auth)
     return (
       <nav className="navbar is-spaced">
         <div className="navbar-menu is-active">
@@ -43,4 +43,4 @@ function mapStateToProps({ auth }) {
   return { auth };
 }
 
-export default connect(mapStateToProps)(Header);
+export default withRouter(connect(mapStateToProps)(Header));
