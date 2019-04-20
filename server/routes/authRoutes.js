@@ -72,9 +72,9 @@ router.get('/current_user', (req, res) => {
   res.send(req.user ? { id: req.user.id } : null);
 });
 
-router.get('/logout', (req, res) => {
+router.post('/logout', (req, res) => {
   req.logout();
-  res.redirect('/');
+  res.end();
 });
 
 module.exports = router;

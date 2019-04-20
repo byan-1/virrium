@@ -5,9 +5,11 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Landing from './Landing';
 import Signin from './Authentication/Signin';
-import Dashboard from './Dashboard';
+import Dashboard from './Dashboard/';
 import SignUp from './Authentication/Signup';
 import { fetchUser } from '../actions/index';
+import ReqSignedIn from './HOC/ReqSignedIn';
+import ReqSignedOut from './HOC/ReqSignedOut';
 
 class App extends Component {
   componentDidMount() {
@@ -17,10 +19,10 @@ class App extends Component {
   render() {
     return (
       <BrowserRouter>
-        <Route exact path="/" component={Landing} />
-        <Route exact path="/signin" component={Signin} />
-        <Route exact path="/dashboard" component={Dashboard} />
-        <Route exact path="/signup" component={SignUp} />
+        <Route exact path="/" component={ReqSignedOut(Landing)} />
+        <Route exact path="/signin" component={ReqSignedOut(Signin)} />
+        <Route exact path="/dashboard" component={ReqSignedIn(Dashboard)} />
+        <Route exact path="/signup" component={ReqSignedOut(SignUp)} />
       </BrowserRouter>
     );
   }

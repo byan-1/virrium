@@ -6,6 +6,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { setUser } from '../../actions';
 import EmailFields from './EmailFields';
+import Header from '../Header';
 
 class SignUp extends Component {
   signUp = async ({ email, password }) => {
@@ -14,20 +15,23 @@ class SignUp extends Component {
       this.props.setUser(user);
       this.props.history.push('/dashboard');
     } catch (err) {
-      this.props.history.push('/error');
+      console.log(err);
     }
   };
 
   render() {
     const { handleSubmit } = this.props;
     return (
-      <section className="section vcenter">
-        <div className="container is-widescreen">
-          <form onSubmit={handleSubmit(this.signUp)}>
-            <EmailFields buttonText="Sign Up" />
-          </form>
-        </div>
-      </section>
+      <div>
+        <Header authPage={true} />
+        <section className="section vcenter">
+          <div className="container is-widescreen">
+            <form onSubmit={handleSubmit(this.signUp)}>
+              <EmailFields buttonText="Sign Up" />
+            </form>
+          </div>
+        </section>
+      </div>
     );
   }
 }
