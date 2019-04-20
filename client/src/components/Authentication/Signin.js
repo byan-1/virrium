@@ -1,10 +1,11 @@
 import './Signin.scss';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { reduxForm, Field } from 'redux-form';
+import { reduxForm } from 'redux-form';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import EmailFields from './EmailFields';
+import OAuthButtons from './OAuthButtons';
 
 class Signin extends Component {
   render() {
@@ -18,55 +19,12 @@ class Signin extends Component {
           <div className="columns">
             <div className="column">
               <form action="/auth/email">
-                <fieldset className="field">
-                  <label className="label">Email</label>
-                  <div className="control">
-                    <Field
-                      name="email"
-                      type="email"
-                      component="input"
-                      autoComplete="none"
-                      className="input is-medium"
-                    />
-                  </div>
-                </fieldset>
-                <fieldset className="field">
-                  <label className="label">Password</label>
-                  <div className="control">
-                    <Field
-                      name="password"
-                      type="password"
-                      component="input"
-                      autoComplete="none"
-                      className="input is-medium"
-                    />
-                  </div>
-                </fieldset>
-                <div className="control">
-                  <button className="button is-dark is-medium">Sign In</button>
-                </div>
+                <EmailFields buttonText="Sign In" />
               </form>
             </div>
 
             <div className="column is-half">
-              <div>
-                <a
-                  className="button is-info is-large size1 marginbtm margintop"
-                  href="/auth/google"
-                >
-                  <span className="icon is-medium">
-                    <i className="fa fa-google" />
-                  </span>
-                  <span>Continue with Google</span>
-                </a>
-                <br />
-                <a className="button is-link is-large" href="/auth/facebook">
-                  <span className="icon is-medium">
-                    <i className="fa fa-facebook" />
-                  </span>
-                  <span>Continue with Facebook</span>
-                </a>
-              </div>
+              <OAuthButtons />
             </div>
           </div>
         </div>

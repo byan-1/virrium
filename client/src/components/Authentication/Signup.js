@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { reduxForm, Field } from 'redux-form';
+import { reduxForm } from 'redux-form';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { setUser } from '../../actions';
+import EmailFields from './EmailFields';
 
 class SignUp extends Component {
   signUp = async ({ email, password }) => {
@@ -13,34 +14,20 @@ class SignUp extends Component {
       this.props.setUser(user);
       this.props.history.push('/dashboard');
     } catch (err) {
-      console.log(err);
+      this.props.history.push('/error');
     }
   };
 
   render() {
     const { handleSubmit } = this.props;
     return (
-      <form onSubmit={handleSubmit(this.signUp)}>
-        <fieldset>
-          <label>Email</label>
-          <Field
-            name="email"
-            type="email"
-            component="input"
-            autoComplete="none"
-          />
-        </fieldset>
-        <fieldset>
-          <label>Password</label>
-          <Field
-            name="password"
-            type="password"
-            component="input"
-            autoComplete="none"
-          />
-        </fieldset>
-        <button>Sign Up</button>
-      </form>
+      <section className="section vcenter">
+        <div className="container is-widescreen">
+          <form onSubmit={handleSubmit(this.signUp)}>
+            <EmailFields buttonText="Sign Up" />
+          </form>
+        </div>
+      </section>
     );
   }
 }
