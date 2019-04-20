@@ -3,6 +3,7 @@ import { reduxForm, Field } from 'redux-form';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 import { setUser } from '../../../actions';
 
 class SignUp extends Component {
@@ -24,7 +25,7 @@ class SignUp extends Component {
           <label>Email</label>
           <Field
             name="email"
-            type="text"
+            type="email"
             component="input"
             autoComplete="none"
           />
@@ -43,6 +44,12 @@ class SignUp extends Component {
     );
   }
 }
+
+SignUp.propTypes = {
+  history: PropTypes.object,
+  setUser: PropTypes.func,
+  handleSubmit: PropTypes.func
+};
 
 export default compose(
   connect(

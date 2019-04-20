@@ -75,7 +75,8 @@ passport.use(
       if (!existingUser) {
         return done(null, false, { message: 'Incorrect username.' });
       }
-      if (!existingUser.validPassword(password)) {
+      const match = await existingUser.comparePassword(password);
+      if (!match) {
         return done(null, false, { message: 'Incorrect password.' });
       }
       return done(null, { id: existingUser.uid });

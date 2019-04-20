@@ -1,35 +1,51 @@
 import './Authentication.scss';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { reduxForm, Field } from 'redux-form';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 class Authentication extends Component {
   render() {
     return (
       <section className="section vcenter">
         <div className="container is-widescreen">
-          <h1 className="title">Neutriv</h1>
+          <h1 className="title">Neuriv</h1>
           <h2 className="subtitle">
             Don&apos;t have an account? <Link to="/signup">Sign up here</Link>
           </h2>
           <div className="columns">
             <div className="column">
-              <div>
-                <div className="field">
+              <form action="/auth/email">
+                <fieldset className="field">
                   <label className="label">Email</label>
                   <div className="control">
-                    <input className="input is-medium" type="email" />
+                    <Field
+                      name="email"
+                      type="email"
+                      component="input"
+                      autoComplete="none"
+                      className="input is-medium"
+                    />
                   </div>
-                </div>
-                <div className="field">
+                </fieldset>
+                <fieldset className="field">
                   <label className="label">Password</label>
                   <div className="control">
-                    <input className="input is-medium" type="password" />
+                    <Field
+                      name="password"
+                      type="password"
+                      component="input"
+                      autoComplete="none"
+                      className="input is-medium"
+                    />
                   </div>
-                </div>
+                </fieldset>
                 <div className="control">
                   <button className="button is-dark is-medium">Sign In</button>
                 </div>
-              </div>
+              </form>
             </div>
 
             <div className="column is-half">
@@ -59,4 +75,7 @@ class Authentication extends Component {
   }
 }
 
-export default Authentication;
+export default compose(
+  connect(null),
+  reduxForm({ form: 'signin' })
+)(Authentication);

@@ -8,7 +8,7 @@ const Landing = () => {
       <Header />
       <div className="hero-body">
         <div className="container">
-          <h1 className="title">Mindpouch</h1>
+          <h1 className="title">Neuriv</h1>
           <h2 className="subtitle">Quiz yourself</h2>
         </div>
       </div>

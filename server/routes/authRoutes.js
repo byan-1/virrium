@@ -30,6 +30,14 @@ router.get(
   })
 );
 
+router.get(
+  '/email',
+  passport.authenticate('local', {
+    successRedirect: '/dashboard',
+    failureRedirect: '/signin'
+  })
+);
+
 router.post('/signup', async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -44,11 +52,13 @@ router.post('/signup', async (req, res, next) => {
     return;
   }
 
+  const hashedPassword = await EmailAuth.hashPassword(password);
+
   const user = await User.query()
     .insert({})
     .returning('*');
 
-  await user.$relatedQuery('eauth').insert({ email, password });
+  await user.$relatedQuery('eauth').insert({ email, password: hashedPassword });
 
   req.login({ id: user.id }, err => {
     if (err) {

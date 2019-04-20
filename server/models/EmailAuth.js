@@ -1,4 +1,5 @@
 const { Model } = require('objection');
+const bcrypt = require('bcrypt');
 
 class EmailAuth extends Model {
   static get tableName() {
@@ -7,6 +8,20 @@ class EmailAuth extends Model {
 
   static get idColumn() {
     return 'uid';
+  }
+
+  static async hashPassword(password) {
+    const saltRounds = 10;
+
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    return hashedPassword;
+  }
+
+  async comparePassword(candPassword) {
+    const match = bcrypt.compare(candPassword, this.password);
+    console.log(match);
+    return match;
   }
 
   static get relationMappings() {
