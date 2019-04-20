@@ -1,4 +1,4 @@
-import './Authentication.scss';
+import './Signin.scss';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { reduxForm, Field } from 'redux-form';
@@ -6,7 +6,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-class Authentication extends Component {
+class Signin extends Component {
   render() {
     return (
       <section className="section vcenter">
@@ -78,4 +78,4 @@ class Authentication extends Component {
 export default compose(
   connect(null),
   reduxForm({ form: 'signin' })
-)(Authentication);
+)(Signin);

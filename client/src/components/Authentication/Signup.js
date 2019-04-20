@@ -4,7 +4,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import { setUser } from '../../../actions';
+import { setUser } from '../../actions';
 
 class SignUp extends Component {
   signUp = async ({ email, password }) => {

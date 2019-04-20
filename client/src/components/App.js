@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Landing from './Landing/Landing';
-import Authentication from './Authentication/Authentication';
-import Dashboard from './Dashboard/Dashboard';
-import SignUp from './Authentication/Signup/Signup';
+import Landing from './Landing';
+import Signin from './Authentication/Signin';
+import Dashboard from './Dashboard';
+import SignUp from './Authentication/Signup';
 import { fetchUser } from '../actions/index';
 
 class App extends Component {
@@ -18,7 +18,7 @@ class App extends Component {
     return (
       <BrowserRouter>
         <Route exact path="/" component={Landing} />
-        <Route exact path="/signin" component={Authentication} />
+        <Route exact path="/signin" component={Signin} />
         <Route exact path="/dashboard" component={Dashboard} />
         <Route exact path="/signup" component={SignUp} />
       </BrowserRouter>

@@ -1,6 +1,6 @@
 import './Landing.scss';
 import React from 'react';
-import Header from '../Header/Header';
+import Header from './Header';
 
 const Landing = () => {
   return (
