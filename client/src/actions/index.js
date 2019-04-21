@@ -12,6 +12,6 @@ export const setUser = user => {
 
 export const signOut = history => async dispatch => {
   await axios.post('/auth/logout');
-  history.push('/');
   dispatch({ type: SIGN_OUT });
+  history.push('/');
 };

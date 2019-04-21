@@ -9,25 +9,37 @@ import EmailFields from './EmailFields';
 import Header from '../Header';
 
 class SignUp extends Component {
+  state = {
+    errMessage: ''
+  };
+
   signUp = async ({ email, password }) => {
     try {
       const user = await axios.post('/auth/signup', { email, password });
       this.props.setUser(user);
       this.props.history.push('/dashboard');
     } catch (err) {
-      console.log(err);
+      if (err.status === 504) {
+        this.setState({
+          errMessage: 'Request timed out. Please try again later.'
+        });
+      } else {
+        this.setState({ errMessage: err.response.data.error });
+      }
     }
   };
 
   render() {
-    const { handleSubmit } = this.props;
     return (
       <div>
         <Header authPage={true} />
         <section className="section vcenter">
           <div className="container is-widescreen">
-            <form onSubmit={handleSubmit(this.signUp)}>
-              <EmailFields buttonText="Sign Up" />
+            <form onSubmit={this.props.handleSubmit(this.signUp)}>
+              <EmailFields
+                buttonText="Sign Up"
+                errMessage={this.state.errMessage}
+              />
             </form>
           </div>
         </section>

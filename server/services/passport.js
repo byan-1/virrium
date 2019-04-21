@@ -73,11 +73,11 @@ passport.use(
     async (email, password, done) => {
       const existingUser = await EmailAuth.query().findOne({ email });
       if (!existingUser) {
-        return done(null, false, { message: 'Incorrect username.' });
+        return done(null, false, { error: 'Email address does not exist' });
       }
       const match = await existingUser.comparePassword(password);
       if (!match) {
-        return done(null, false, { message: 'Incorrect password.' });
+        return done(null, false, { error: 'Incorrect password' });
       }
       return done(null, { id: existingUser.uid });
     }

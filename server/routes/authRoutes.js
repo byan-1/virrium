@@ -30,26 +30,42 @@ router.get(
   })
 );
 
-router.get(
-  '/email',
-  passport.authenticate('local', {
-    successRedirect: '/dashboard',
-    failureRedirect: '/signin'
-  })
-);
+router.post('/email', (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    //overwrite passport's default missing credentials error message
+    if (info.message) {
+      return res
+        .status(400)
+        .send({ error: 'You must provide an email and password' });
+    }
+    if (info) {
+      res.status(422).send(info);
+    }
+    req.logIn(user, err => {
+      if (err) {
+        return next(err);
+      }
+      res.send(user);
+    });
+  })(req, res, next);
+});
 
 router.post('/signup', async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
 
   if (!email || !password) {
-    res.status(422).send({ error: 'You must provide an email and password' });
-    return;
+    return res
+      .status(422)
+      .send({ error: 'You must provide an email and password' });
   }
+
   const existingUser = await EmailAuth.query().findOne({ email });
   if (existingUser) {
-    res.status(422).send({ error: 'Email in use' });
-    return;
+    return res.status(422).send({ error: 'Email in use' });
   }
 
   const hashedPassword = await EmailAuth.hashPassword(password);

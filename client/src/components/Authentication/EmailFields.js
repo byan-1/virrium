@@ -12,7 +12,7 @@ class EmailFields extends Component {
           <div className="control">
             <Field
               name="email"
-              type="email"
+              type="text"
               component="input"
               autoComplete="none"
               className="input is-medium"
@@ -31,8 +31,9 @@ class EmailFields extends Component {
             />
           </div>
         </fieldset>
+        <div className="has-text-danger">{this.props.errMessage}</div>
         <div className="control">
-          <button className="button is-dark is-medium">
+          <button className="button is-dark is-medium formbtn">
             {this.props.buttonText}
           </button>
         </div>
@@ -42,7 +43,8 @@ class EmailFields extends Component {
 }
 
 EmailFields.propTypes = {
-  buttonText: PropTypes.string
+  buttonText: PropTypes.string,
+  errMessage: PropTypes.string
 };
 
 export default EmailFields;
