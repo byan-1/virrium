@@ -10,21 +10,24 @@ import Header from '../Header';
 
 class SignUp extends Component {
   state = {
-    errMessage: ''
+    errMessage: '',
+    loading: false
   };
 
   signUp = async ({ email, password }) => {
     try {
+      this.setState({ loading: true });
       const user = await axios.post('/auth/signup', { email, password });
       this.props.setUser(user);
       this.props.history.push('/dashboard');
     } catch (err) {
-      if (err.status === 504) {
+      if (!err.response || err.response.status === 504) {
         this.setState({
-          errMessage: 'Request timed out. Please try again later.'
+          errMessage: 'Server timed out. Please try again later.',
+          loading: false
         });
       } else {
-        this.setState({ errMessage: err.response.data.error });
+        this.setState({ errMessage: err.response.data.error, loading: false });
       }
     }
   };
@@ -39,6 +42,7 @@ class SignUp extends Component {
               <EmailFields
                 buttonText="Sign Up"
                 errMessage={this.state.errMessage}
+                loading={this.state.loading}
               />
             </form>
           </div>
@@ -51,7 +55,8 @@ class SignUp extends Component {
 SignUp.propTypes = {
   history: PropTypes.object,
   setUser: PropTypes.func,
-  handleSubmit: PropTypes.func
+  handleSubmit: PropTypes.func,
+  loading: PropTypes.bool
 };
 
 export default compose(

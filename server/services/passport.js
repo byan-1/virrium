@@ -51,17 +51,21 @@ passport.use(
       proxy: true
     },
     async (accessToken, refreshToken, profile, done) => {
-      const existingUser = await FBAuth.query().findOne({
-        fbid: profile.id
-      });
-      if (existingUser) {
-        done(null, { id: existingUser.uid });
-      } else {
-        const user = await User.query()
-          .insert({})
-          .returning('*');
-        await user.$relatedQuery('facebookauth').insert({ fbid: profile.id });
-        done(null, user);
+      try {
+        const existingUser = await FBAuth.query().findOne({
+          fbid: profile.id
+        });
+        if (existingUser) {
+          done(null, { id: existingUser.uid });
+        } else {
+          const user = await User.query()
+            .insert({})
+            .returning('*');
+          await user.$relatedQuery('facebookauth').insert({ fbid: profile.id });
+          done(null, user);
+        }
+      } catch (err) {
+        done(err);
       }
     }
   )

@@ -13,21 +13,24 @@ import { setUser } from '../../actions';
 
 class Signin extends Component {
   state = {
-    errMessage: ''
+    errMessage: '',
+    loading: false
   };
 
   signIn = async ({ email, password }) => {
     try {
+      this.setState({ loading: true });
       const user = await axios.post('/auth/email', { email, password });
       this.props.setUser(user);
       this.props.history.push('/dashboard');
     } catch (err) {
-      if (err.status === 504) {
+      if (!err.response || err.response.status === 504) {
         this.setState({
-          errMessage: 'Request timed out. Please try again later.'
+          errMessage: 'Server timed out. Please try again later.',
+          loading: false
         });
       } else {
-        this.setState({ errMessage: err.response.data.error });
+        this.setState({ errMessage: err.response.data.error, loading: false });
       }
     }
   };
@@ -48,6 +51,7 @@ class Signin extends Component {
                   <EmailFields
                     buttonText="Sign In"
                     errMessage={this.state.errMessage}
+                    loading={this.state.loading}
                   />
                 </form>
               </div>

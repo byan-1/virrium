@@ -36,13 +36,13 @@ router.post('/email', (req, res, next) => {
       return next(err);
     }
     //overwrite passport's default missing credentials error message
-    if (info.message) {
+    if (info && info.message) {
       return res
-        .status(400)
+        .status(401)
         .send({ error: 'You must provide an email and password' });
     }
     if (info) {
-      res.status(422).send(info);
+      return res.status(401).send(info);
     }
     req.logIn(user, err => {
       if (err) {

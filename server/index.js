@@ -7,6 +7,7 @@ const cookieSession = require('cookie-session');
 const router = require('./routes');
 const knex = require('./config/db');
 const keys = require('./config/keys');
+const errHandler = require('./middleware/errHandler');
 require('./services/passport');
 
 const app = express()
@@ -20,9 +21,9 @@ const app = express()
   .use(morgan('combined'))
   .use(passport.initialize())
   .use(passport.session())
-  .use(router);
+  .use(router)
+  .use(errHandler);
 
-  
 Model.knex(knex);
 
 const PORT = process.env.PORT || 5000;

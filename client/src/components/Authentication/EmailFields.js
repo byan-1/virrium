@@ -4,6 +4,14 @@ import { Field } from 'redux-form';
 import PropTypes from 'prop-types';
 
 class EmailFields extends Component {
+  buttonClass() {
+    if (this.props.loading) {
+      return 'button is-dark is-medium formbtn is-loading';
+    } else {
+      return 'button is-dark is-medium formbtn';
+    }
+  }
+
   render() {
     return (
       <div>
@@ -33,7 +41,8 @@ class EmailFields extends Component {
         </fieldset>
         <div className="has-text-danger">{this.props.errMessage}</div>
         <div className="control">
-          <button className="button is-dark is-medium formbtn">
+          {' '}
+          <button className={this.buttonClass()}>
             {this.props.buttonText}
           </button>
         </div>
@@ -44,7 +53,8 @@ class EmailFields extends Component {
 
 EmailFields.propTypes = {
   buttonText: PropTypes.string,
-  errMessage: PropTypes.string
+  errMessage: PropTypes.string,
+  loading: PropTypes.bool
 };
 
 export default EmailFields;

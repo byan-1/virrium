@@ -20,7 +20,6 @@ class EmailAuth extends Model {
 
   async comparePassword(candPassword) {
     const match = bcrypt.compare(candPassword, this.password);
-    console.log(match);
     return match;
   }
 
