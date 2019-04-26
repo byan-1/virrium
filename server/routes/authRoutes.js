@@ -62,26 +62,31 @@ router.post('/signup', async (req, res, next) => {
       .status(422)
       .send({ error: 'You must provide an email and password' });
   }
-
-  const existingUser = await EmailAuth.query().findOne({ email });
-  if (existingUser) {
-    return res.status(422).send({ error: 'Email in use' });
-  }
-
-  const hashedPassword = await EmailAuth.hashPassword(password);
-
-  const user = await User.query()
-    .insert({})
-    .returning('*');
-
-  await user.$relatedQuery('eauth').insert({ email, password: hashedPassword });
-
-  req.login({ id: user.id }, err => {
-    if (err) {
-      return next(err);
+  try {
+    const existingUser = await EmailAuth.query().findOne({ email });
+    if (existingUser) {
+      return res.status(422).send({ error: 'Email in use' });
     }
-    return res.send({ id: user.id });
-  });
+
+    const hashedPassword = await EmailAuth.hashPassword(password);
+
+    const user = await User.query()
+      .insert({})
+      .returning('*');
+
+    await user
+      .$relatedQuery('eauth')
+      .insert({ email, password: hashedPassword });
+
+    req.login({ id: user.id }, err => {
+      if (err) {
+        return next(err);
+      }
+      return res.send({ id: user.id });
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.get('/current_user', (req, res) => {

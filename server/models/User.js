@@ -9,6 +9,7 @@ class User extends Model {
     const GAuth = require('./GAuth');
     const FBAuth = require('./FBAuth');
     const EmailAuth = require('./EmailAuth');
+    const QuestionSet = require('./QuestionSet');
     return {
       googleauth: {
         relation: Model.HasOneRelation,
@@ -32,6 +33,14 @@ class User extends Model {
         join: {
           from: 'users.id',
           to: 'emailauth.uid'
+        }
+      },
+      questionset: {
+        relation: Model.HasManyRelation,
+        modelClass: QuestionSet,
+        join: {
+          from: 'users.id',
+          to: 'qsets.uid'
         }
       }
     };
