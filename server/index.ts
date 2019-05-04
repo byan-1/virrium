@@ -28,3 +28,6 @@ Model.knex(knex);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT);
+
+//Fixes Typescript namespace error
+export {};

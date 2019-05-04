@@ -1,15 +1,16 @@
 const { Model } = require('objection');
+import { RelationMappings } from 'objection';
 
 class GAuth extends Model {
-  static get tableName() {
+  static get tableName() : string {
     return 'gauth';
   }
 
-  static get idColumn() {
+  static get idColumn() : string {
     return 'uid';
   }
 
-  static get relationMappings() {
+  static get relationMappings() : RelationMappings {
     const User = require('./User');
 
     return {

@@ -1,11 +1,12 @@
 const { Model } = require('objection');
+import { RelationMappings } from 'objection';
 
 class Question extends Model {
-  static get tableName() {
+  static get tableName() : string {
     return 'questions';
   }
 
-  static get relationMappings() {
+  static get relationMappings() : RelationMappings {
     const QuestionSet = require('./QuestionSet');
     return {
       questionset: {
@@ -21,3 +22,4 @@ class Question extends Model {
 }
 
 module.exports = Question;
+

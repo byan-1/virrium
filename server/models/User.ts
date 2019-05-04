@@ -1,11 +1,12 @@
 const { Model } = require('objection');
+import { RelationMappings } from 'objection';
 
 class User extends Model {
-  static get tableName() {
+  static get tableName(): string {
     return 'users';
   }
 
-  static get relationMappings() {
+  static get relationMappings(): RelationMappings {
     const GAuth = require('./GAuth');
     const FBAuth = require('./FBAuth');
     const EmailAuth = require('./EmailAuth');
@@ -48,3 +49,4 @@ class User extends Model {
 }
 
 module.exports = User;
+

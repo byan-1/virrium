@@ -1,3 +1,5 @@
+import { Dispatch } from 'react';
+
 export as namespace Types;
 
 export type UserState =
@@ -28,3 +30,5 @@ export type EmailProps = {
 export type NewCollection = {
   title: string;
 };
+
+export type AsyncAction = (dispatch: Dispatch) => Promise<void>;

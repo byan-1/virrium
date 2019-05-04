@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "rootDir": "./src/",
+    "outDir": "./build/",
+    "module": "commonjs",
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "declaration": false,
+    "removeComments": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "emitDecoratorMetadata": false,
+    "inlineSources": true,
+    "baseUrl": ".",
+    "paths": {
+      "*": ["*", "./@types/*"]
+    },
+    "esModuleInterop": true,
+    "lib": ["es6"],
+    "typeRoots": ["./node_modules/@types", "./@types"]
+  },
+  "include": ["./"],
+  "exclude": ["node_modules"]
+}

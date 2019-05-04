@@ -1,3 +1,4 @@
+import { UserType, Done, OAuth } from '../@types';
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20');
 const FacebookStrategy = require('passport-facebook').Strategy;
@@ -8,14 +9,18 @@ const GAuth = require('../models/GAuth');
 const FBAuth = require('../models/FBAuth');
 const EmailAuth = require('../models/EmailAuth');
 
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
+passport.serializeUser(
+  (user: UserType, done: Done): void => {
+    done(null, user.id);
+  }
+);
 
-passport.deserializeUser(async (id, done) => {
-  const user = await User.query().findById(id);
-  done(null, user);
-});
+passport.deserializeUser(
+  async (id: number, done: Done): Promise<void> => {
+    const user = await User.query().findById(id);
+    done(null, user);
+  }
+);
 
 passport.use(
   new GoogleStrategy(
@@ -25,7 +30,12 @@ passport.use(
       callbackURL: '/auth/google/callback',
       proxy: true
     },
-    async (accessToken, refreshToken, profile, done) => {
+    async (
+      accessToken: string | null,
+      refreshToken: string | null,
+      profile: OAuth,
+      done: Done
+    ): Promise<void> => {
       const existingUser = await GAuth.query().findOne({
         googleid: profile.id
       });
@@ -50,7 +60,12 @@ passport.use(
       callbackURL: '/auth/facebook/callback',
       proxy: true
     },
-    async (accessToken, refreshToken, profile, done) => {
+    async (
+      accessToken: string,
+      refreshToken: string,
+      profile: OAuth,
+      done: Done
+    ): Promise<void> => {
       try {
         const existingUser = await FBAuth.query().findOne({
           fbid: profile.id
@@ -74,7 +89,7 @@ passport.use(
 passport.use(
   new LocalStrategy(
     { usernameField: 'email' },
-    async (email, password, done) => {
+    async (email: string, password: string, done: Done): Promise<void> => {
       const existingUser = await EmailAuth.query().findOne({ email });
       if (!existingUser) {
         return done(null, false, { error: 'Email address does not exist' });

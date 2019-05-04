@@ -1,10 +1,11 @@
 const { Model } = require('objection');
+import { RelationMappings } from 'objection';
 
 class QuestionSet extends Model {
-  static get tableName() {
+  static get tableName(): string {
     return 'qsets';
   }
-  static get relationMappings() {
+  static get relationMappings(): RelationMappings {
     const User = require('./User');
     const Question = require('./Question');
     return {
@@ -29,3 +30,6 @@ class QuestionSet extends Model {
 }
 
 module.exports = QuestionSet;
+
+//Fixes Typescript namespace error
+export {};

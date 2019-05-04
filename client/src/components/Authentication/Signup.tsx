@@ -21,8 +21,8 @@ class SignUp extends Component<InjectedFormProps & DispatchProps> {
   signUp = async ({ email, password }: Types.EmailProps) => {
     try {
       this.setState({ loading: true });
-      const user = await axios.post('/auth/signup', { email, password });
-      this.props.setUser(user);
+      const resp = await axios.post('/auth/signup', { email, password });
+      this.props.setUser(resp.data);
       this.props.history.push('/dashboard');
     } catch (err) {
       if (!err.response || err.response.status === 504) {

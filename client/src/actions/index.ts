@@ -3,7 +3,7 @@ import { FETCH_USER, SET_USER, SIGN_OUT } from './types';
 import { Dispatch } from 'redux';
 import { History } from 'history';
 
-export const fetchUser = (): Function => async (
+export const fetchUser = (): Types.AsyncAction => async (
   dispatch: Dispatch
 ): Promise<void> => {
   const res = await axios.get('/auth/current_user');
@@ -14,7 +14,7 @@ export const setUser = (user: Types.UserState): Types.Action => {
   return { type: SET_USER, payload: user };
 };
 
-export const signOut = (history: History): Function => async (
+export const signOut = (history: History): Types.AsyncAction => async (
   dispatch: Dispatch
 ): Promise<void> => {
   await axios.post('/auth/logout');

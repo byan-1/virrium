@@ -1,16 +1,17 @@
 const { Model } = require('objection');
 const bcrypt = require('bcrypt');
+import { RelationMappings } from 'objection';
 
 class EmailAuth extends Model {
-  static get tableName() {
+  static get tableName(): string {
     return 'emailauth';
   }
 
-  static get idColumn() {
+  static get idColumn(): string {
     return 'uid';
   }
 
-  static async hashPassword(password) {
+  static async hashPassword(password: string): Promise<string> {
     const saltRounds = 10;
 
     const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -18,12 +19,12 @@ class EmailAuth extends Model {
     return hashedPassword;
   }
 
-  async comparePassword(candPassword) {
+  async comparePassword(candPassword: string): Promise<boolean> {
     const match = bcrypt.compare(candPassword, this.password);
     return match;
   }
 
-  static get relationMappings() {
+  static get relationMappings(): RelationMappings {
     const User = require('./User');
 
     return {

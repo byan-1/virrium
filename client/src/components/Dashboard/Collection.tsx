@@ -8,7 +8,7 @@ interface StateProps {
 }
 
 interface ComponentState {
-  collections: Array<CollectionType>;
+  collections: Array<CollectionType> | null;
 }
 
 interface CollectionType {
@@ -24,15 +24,18 @@ class Collection extends Component<StateProps, ComponentState> {
   };
   async getCollections() {
     if (this.props.auth && !this.state.collections) {
-      const collections = await axios.get(
-        '/api/question/' + this.props.auth.id
-      );
-      this.setState({ collections: collections.data });
+      try {
+        const collections = await axios.get(
+          '/api/question/' + this.props.auth.id
+        );
+        this.setState({ collections: collections.data });
+      } catch (err) {
+        console.log('ERR OCCURED');
+      }
     }
   }
 
   renderCollections() {
-    console.log(this.state.collections);
     return this.state.collections === null
       ? null
       : this.state.collections.map((collection: CollectionType) => {
