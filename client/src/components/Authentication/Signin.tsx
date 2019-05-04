@@ -1,23 +1,26 @@
 import './Signin.scss';
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { reduxForm } from 'redux-form';
+import { Link, RouteComponentProps } from 'react-router-dom';
+import { reduxForm, InjectedFormProps } from 'redux-form';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import axios from 'axios';
 import EmailFields from './EmailFields';
 import OAuthButtons from './OAuthButtons';
 import Header from '../Header';
 import { setUser } from '../../actions';
 
-class Signin extends Component {
+interface DispatchProps extends RouteComponentProps {
+  setUser: (user: object) => Types.Action;
+}
+
+class Signin extends Component<InjectedFormProps & DispatchProps> {
   state = {
     errMessage: '',
     loading: false
   };
 
-  signIn = async ({ email, password }) => {
+  signIn = async ({ email, password }: Types.EmailProps) => {
     try {
       this.setState({ loading: true });
       const user = await axios.post('/auth/email', { email, password });
@@ -65,12 +68,6 @@ class Signin extends Component {
     );
   }
 }
-
-Signin.propTypes = {
-  handleSubmit: PropTypes.func,
-  history: PropTypes.object,
-  setUser: PropTypes.func
-};
 
 export default compose(
   connect(

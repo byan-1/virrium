@@ -1,9 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { RouteComponentProps } from 'react-router-dom';
+import { InjectedFormProps } from 'redux-form';
 
-export default ComposedComponent => {
-  class ReqSignedIn extends Component {
+interface StateProps extends RouteComponentProps {
+  auth: Types.UserState;
+}
+
+export default (
+  ComposedComponent: React.ComponentType
+): React.ComponentType => {
+  class ReqSignedIn extends Component<StateProps & InjectedFormProps> {
     componentDidMount() {
       if (this.props.auth === false) {
         this.props.history.replace('/signin');
@@ -20,15 +27,9 @@ export default ComposedComponent => {
       return <ComposedComponent {...this.props} />;
     }
   }
-  function mapStateToProps(state) {
+  function mapStateToProps(state: Types.State): Types.AuthState {
     return { auth: state.auth };
   }
-
-  ReqSignedIn.propTypes = {
-    component: PropTypes.func,
-    auth: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
-    history: PropTypes.object
-  };
 
   return connect(mapStateToProps)(ReqSignedIn);
 };

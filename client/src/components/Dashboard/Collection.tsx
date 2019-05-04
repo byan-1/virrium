@@ -1,11 +1,25 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 
-class Collection extends Component {
-  state = {
+interface StateProps {
+  auth: Types.UserState;
+}
+
+interface ComponentState {
+  collections: Array<CollectionType>;
+}
+
+interface CollectionType {
+  id: number;
+  uid: number;
+  name: string;
+  tags: Array<any>;
+}
+
+class Collection extends Component<StateProps, ComponentState> {
+  state: ComponentState = {
     collections: null
   };
   async getCollections() {
@@ -18,8 +32,10 @@ class Collection extends Component {
   }
 
   renderCollections() {
-    return this.state.collections !== null
-      ? this.state.collections.map(collection => {
+    console.log(this.state.collections);
+    return this.state.collections === null
+      ? null
+      : this.state.collections.map((collection: CollectionType) => {
           return (
             <Link
               to={'/collection/' + collection.id}
@@ -29,8 +45,7 @@ class Collection extends Component {
               {collection.name}
             </Link>
           );
-        })
-      : null;
+        });
   }
 
   render() {
@@ -50,11 +65,7 @@ class Collection extends Component {
   }
 }
 
-Collection.propTypes = {
-  auth: PropTypes.object
-};
-
-function mapStateToProps({ auth }) {
+function mapStateToProps({ auth }: Types.State): Types.AuthState {
   return { auth };
 }
 

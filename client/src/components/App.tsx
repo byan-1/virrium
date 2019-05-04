@@ -2,17 +2,20 @@ import './App.scss';
 import React, { Component } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import Landing from './Landing';
 import Signin from './Authentication/Signin';
-import Dashboard from './Dashboard/';
+import Dashboard from './Dashboard';
 import SignUp from './Authentication/Signup';
 import NewCollection from './Dashboard/NewCollection';
 import { fetchUser } from '../actions/index';
 import ReqSignedIn from './HOC/ReqSignedIn';
 import ReqSignedOut from './HOC/ReqSignedOut';
 
-class App extends Component {
+type DispatchProps = {
+  fetchUser: Function;
+};
+
+class App extends Component<DispatchProps, {}> {
   componentDidMount() {
     this.props.fetchUser();
   }
@@ -29,10 +32,6 @@ class App extends Component {
     );
   }
 }
-
-App.propTypes = {
-  fetchUser: PropTypes.func
-};
 
 export default connect(
   null,

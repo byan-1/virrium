@@ -1,20 +1,24 @@
 import React, { Component } from 'react';
-import { reduxForm } from 'redux-form';
+import { reduxForm, InjectedFormProps } from 'redux-form';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import PropTypes from 'prop-types';
 import { setUser } from '../../actions';
 import EmailFields from './EmailFields';
 import Header from '../Header';
+import { RouteComponentProps } from 'react-router-dom';
 
-class SignUp extends Component {
+interface DispatchProps extends RouteComponentProps {
+  setUser: (user: object) => Types.Action;
+}
+
+class SignUp extends Component<InjectedFormProps & DispatchProps> {
   state = {
     errMessage: '',
     loading: false
   };
 
-  signUp = async ({ email, password }) => {
+  signUp = async ({ email, password }: Types.EmailProps) => {
     try {
       this.setState({ loading: true });
       const user = await axios.post('/auth/signup', { email, password });
@@ -51,13 +55,6 @@ class SignUp extends Component {
     );
   }
 }
-
-SignUp.propTypes = {
-  history: PropTypes.object,
-  setUser: PropTypes.func,
-  handleSubmit: PropTypes.func,
-  loading: PropTypes.bool
-};
 
 export default compose(
   connect(

@@ -1,20 +1,29 @@
 import React, { Component } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { reduxForm, Field } from 'redux-form';
+import { reduxForm, Field, InjectedFormProps } from 'redux-form';
 import Header from '../Header';
-import PropTypes from 'prop-types';
 import axios from 'axios';
+import { RouteComponentProps } from 'react-router';
 
-class NewCollection extends Component {
-  createCollection = async ({ title }) => {
-    await axios.post('/api/question/' + this.props.auth.id, { title });
-    this.props.history.push('/dashboard');
+type StateProps = {
+  auth: Types.UserState;
+};
+
+class NewCollection extends Component<
+  StateProps & RouteComponentProps & InjectedFormProps,
+  {}
+> {
+  createCollection = async ({ title }: Types.NewCollection) => {
+    if (this.props.auth) {
+      await axios.post('/api/question/' + this.props.auth.id, { title });
+      this.props.history.push('/dashboard');
+    }
   };
   render() {
     return (
       <div>
-        <Header />
+        <Header authPage={false} />
         <div className="container">
           <h1>Create a new collection</h1>
           <form onSubmit={this.props.handleSubmit(this.createCollection)}>
@@ -38,13 +47,7 @@ class NewCollection extends Component {
   }
 }
 
-NewCollection.propTypes = {
-  history: PropTypes.object,
-  handleSubmit: PropTypes.func,
-  auth: PropTypes.object
-};
-
-function mapStateToProps({ auth }) {
+function mapStateToProps({ auth }: Types.State): Types.AuthState {
   return { auth };
 }
 

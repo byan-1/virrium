@@ -1,11 +1,22 @@
 import './Header.scss';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import { signOut } from '../actions';
 
-class Header extends Component {
+interface StateProps {
+  auth: Types.UserState;
+}
+
+interface DispatchProps {
+  signOut: Function;
+}
+
+interface OwnProps extends RouteComponentProps {
+  authPage: boolean;
+}
+
+class Header extends Component<StateProps & DispatchProps & OwnProps, {}> {
   renderAuth() {
     switch (this.props.auth) {
       case null:
@@ -49,19 +60,8 @@ class Header extends Component {
   }
 }
 
-Header.propTypes = {
-  signOut: PropTypes.func,
-  auth: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
-  authPage: PropTypes.bool,
-  history: PropTypes.object
-};
-
-Header.defaultProps = {
-  authPage: false
-};
-
-function mapStateToProps({ auth }) {
-  return { auth };
+function mapStateToProps(state: Types.State): Types.AuthState {
+  return { auth: state.auth };
 }
 
 export default withRouter(

@@ -1,9 +1,14 @@
 import './EmailFields.scss';
 import React, { Component } from 'react';
 import { Field } from 'redux-form';
-import PropTypes from 'prop-types';
 
-class EmailFields extends Component {
+interface OwnProps {
+  errMessage: string;
+  loading: boolean;
+  buttonText: string;
+}
+
+class EmailFields extends Component<OwnProps, {}> {
   render() {
     return (
       <div>
@@ -48,11 +53,5 @@ class EmailFields extends Component {
     );
   }
 }
-
-EmailFields.propTypes = {
-  buttonText: PropTypes.string,
-  errMessage: PropTypes.string,
-  loading: PropTypes.bool
-};
 
 export default EmailFields;
