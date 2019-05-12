@@ -15,3 +15,9 @@ export type OAuth = {
   provider: string;
   [key: string]: any;
 };
+
+export interface QuestionRequest {
+  id: string;
+  question: string;
+  answer: string;
+}
