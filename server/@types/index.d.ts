@@ -17,7 +17,6 @@ export type OAuth = {
 };
 
 export interface QuestionRequest {
-  id: string;
   question: string;
   answer: string;
 }

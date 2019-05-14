@@ -33,8 +33,16 @@ export type NewCollection = {
 
 export type AsyncAction = (dispatch: Dispatch) => Promise<void>;
 
-export interface Questions {
-  id: string;
+interface Question {
   question: string;
   answer: string;
 }
+
+export type Questions = {
+  [id: string]: Question;
+};
+
+export type FormQuestion = {
+  question: string;
+  answer: string;
+};

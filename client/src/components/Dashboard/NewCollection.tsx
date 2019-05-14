@@ -1,72 +1,126 @@
-import React, { Component } from 'react';
+import './NewCollection.scss';
+import React, { PureComponent, FormEvent } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { reduxForm, Field, InjectedFormProps } from 'redux-form';
 import Header from '../Header';
 import axios from 'axios';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import TextareaAutosize from 'react-autosize-textarea';
+import { RouteComponentProps } from 'react-router-dom';
 import shortid from 'shortid';
+import QuestionForm from './QuestionForm';
 
 type StateProps = {
   auth: Types.UserState;
 };
 
 interface ComponentState {
-  questions: Array<Types.Questions>;
+  questions: Types.Questions;
 }
 
-class NewCollection extends Component<
+class NewCollection extends PureComponent<
   StateProps & RouteComponentProps & InjectedFormProps,
   ComponentState
 > {
   state: ComponentState = {
-    questions: []
+    questions: {}
   };
 
   createCollection = async ({ title }: Types.NewCollection) => {
     if (this.props.auth) {
       await axios.post('/api/question/' + this.props.auth.id, {
         title,
-        questions: this.state.questions
+        questions: Object.values(this.state.questions)
       });
       this.props.history.push('/dashboard');
     }
   };
 
+  questionChange = (event: React.FormEvent<any>) => {
+    event.persist();
+    const id = event.currentTarget.getAttribute('id');
+    const elem = event.target as HTMLInputElement;
+    this.setState((prevState: any) => {
+      return {
+        questions: {
+          ...prevState.questions,
+          [id]: {
+            question: elem.value,
+            answer: prevState.questions[id].answer
+          }
+        }
+      };
+    });
+  };
+
+  answerChange = (event: React.FormEvent<any>) => {
+    event.persist();
+    const id = event.currentTarget.getAttribute('id');
+    const elem = event.target as HTMLInputElement;
+    this.setState((prevState: ComponentState) => {
+      return {
+        questions: {
+          ...prevState.questions,
+          [id]: {
+            question: prevState.questions[id].question,
+            answer: elem.value
+          }
+        }
+      };
+    });
+  };
+
   renderQuestions() {
-    return this.state.questions.map((question: Types.Questions) => {
-      return (
-        <p key={question.id} className="panel-block">
-          {question.question}
+    const qArr: Array<JSX.Element> = [];
+    Object.keys(this.state.questions).forEach(id => {
+      qArr.push(
+        <div key={id}>
+          <TextareaAutosize
+            id={id}
+            className="input panel-block"
+            value={this.state.questions[id].question}
+            onChange={this.questionChange}
+          />
+          <TextareaAutosize
+            id={id}
+            className="input panel-block"
+            value={this.state.questions[id].answer}
+            onChange={this.answerChange}
+          />
           <button
-            onClick={() => this.removeQuestion(question.id)}
+            id={id}
+            onClick={this.removeQuestion}
             className="button is-dark is-medium"
           >
             Delete
           </button>
-        </p>
+        </div>
       );
     });
+    return qArr;
   }
 
-  addQuestion = ({ question, answer }: Types.Questions) => {
-    this.props.reset();
-    this.setState(prevState => ({
-      questions: [
-        ...prevState.questions,
-        { id: shortid.generate(), question, answer }
-      ]
-    }));
-  };
-
-  //to be refactored for performance, put in subcomponent
-  removeQuestion(id: string) {
-    this.setState(() => {
+  addQuestion = ({ question, answer }: Types.FormQuestion) => {
+    const id = shortid.generate();
+    this.setState(prevState => {
       return {
-        questions: this.state.questions.filter(question => id !== question.id)
+        questions: {
+          ...prevState.questions,
+          [id]: { question, answer }
+        }
       };
     });
-  }
+  };
+
+  removeQuestion = (event: React.FormEvent<any>) => {
+    const id = event.currentTarget.getAttribute('id');
+    const { [id]: q, ...qState } = this.state.questions;
+    this.setState(() => {
+      return {
+        questions: qState
+      };
+    });
+  };
 
   render() {
     return (
@@ -95,25 +149,7 @@ class NewCollection extends Component<
               {this.renderQuestions()}
             </nav>
           </form>
-          <form onSubmit={this.props.handleSubmit(this.addQuestion)}>
-            <Field
-              name="question"
-              className="input"
-              type="text"
-              component="input"
-              placeholder="Type question here"
-            />
-            <Field
-              name="answer"
-              type="text"
-              component="textarea"
-              className="textarea"
-              placeholder="Type answer here"
-            />
-            <button type="submit" className="button is-dark is-medium formbtn">
-              Add Question
-            </button>
-          </form>
+          <QuestionForm submitAction={this.addQuestion} />
         </div>
       </div>
     );

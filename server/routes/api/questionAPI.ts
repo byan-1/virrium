@@ -48,9 +48,8 @@ router.post(
 
       await Promise.all(
         questions.map(
-          async ({ id, question, answer }: QuestionRequest): Promise<void> => {
+          async ({ question, answer }: QuestionRequest): Promise<void> => {
             await Question.query().insert({
-              id,
               qset_id: qset.id,
               q: question,
               a: answer
@@ -61,6 +60,7 @@ router.post(
 
       res.send(qset);
     } catch (err) {
+      console.log(err);
       next(err);
     }
   }
@@ -92,7 +92,6 @@ router.delete(
         .returning('*');
       res.send(qset);
     } catch (err) {
-      console.log(err);
       next(err);
     }
   }
