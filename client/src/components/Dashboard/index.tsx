@@ -7,7 +7,7 @@ class Dashboard extends Component {
   render() {
     return (
       <div>
-        <Header authPage={false} />
+        <Header page="regular" />
         <Collection />
       </div>
     );

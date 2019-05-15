@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import { QUESAPI_PATH, NEWCOL_PATH } from '../../config';
 
 interface StateProps {
   auth: Types.UserState;
@@ -24,9 +25,7 @@ class Collection extends Component<StateProps, ComponentState> {
   async getCollections() {
     if (this.props.auth && !this.state.collections) {
       try {
-        const collections = await axios.get(
-          '/api/question/' + this.props.auth.id
-        );
+        const collections = await axios.get(QUESAPI_PATH + this.props.auth.id);
         this.setState({ collections: collections.data });
       } catch (err) {
         console.log(err);
@@ -64,7 +63,7 @@ class Collection extends Component<StateProps, ComponentState> {
   async removeQuestion(qid: number) {
     if (this.props.auth) {
       try {
-        await axios.delete(`/api/question/${this.props.auth.id}/${qid}`);
+        await axios.delete(`${QUESAPI_PATH + this.props.auth.id}/${qid}`);
         console.log(this.state.collections);
         console.log(qid);
         this.setState(() => {
@@ -88,7 +87,7 @@ class Collection extends Component<StateProps, ComponentState> {
       <div className="container">
         <nav className="panel">
           <p className="panel-heading">
-            <Link to="/new">New Collection</Link>
+            <Link to={NEWCOL_PATH}>New Collection</Link>
           </p>
           {this.renderCollections()}
         </nav>

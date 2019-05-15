@@ -11,7 +11,7 @@ class EditCollection extends Component<RouteComponentProps<Params>> {
   render() {
     return (
       <div>
-        <Header authPage={false} />
+        <Header />
         <p>Collection: {this.props.match.params.id}</p>
       </div>
     );

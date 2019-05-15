@@ -1,12 +1,13 @@
 import './OAuthButtons.scss';
 import React from 'react';
+import { FBAUTH_PATH, GAUTH_PATH } from '../../config';
 
 function OAuthButtons() {
   return (
     <div>
       <a
         className="button is-info is-large size1 marginbtm margintop"
-        href="/auth/google"
+        href={GAUTH_PATH}
       >
         <span className="icon is-medium">
           <i className="fa fa-google" />
@@ -14,7 +15,7 @@ function OAuthButtons() {
         <span>Continue with Google</span>
       </a>
       <br />
-      <a className="button is-link is-large" href="/auth/facebook">
+      <a className="button is-link is-large" href={FBAUTH_PATH}>
         <span className="icon is-medium">
           <i className="fa fa-facebook" />
         </span>

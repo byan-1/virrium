@@ -1,4 +1,4 @@
-import { FETCH_USER, SET_USER, SIGN_OUT } from '../actions/types';
+import { FETCH_USER, SET_USER, SIGN_OUT } from '../config';
 
 export default function(
   state: Types.State | null = null,

@@ -1,65 +1,19 @@
-import React, { Component } from 'react';
-import { reduxForm, InjectedFormProps } from 'redux-form';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import axios from 'axios';
-import { setUser } from '../../actions';
+import React from 'react';
 import EmailFields from './EmailFields';
 import Header from '../Header';
-import { RouteComponentProps } from 'react-router-dom';
+import { SIGNUP_PAGE, AUTH_HEADER } from '../../config';
 
-interface DispatchProps extends RouteComponentProps {
-  setUser: (user: object) => Types.Action;
+function SignUp() {
+  return (
+    <div>
+      <Header page={AUTH_HEADER} />
+      <section className="section vcenter">
+        <div className="container is-widescreen">
+          <EmailFields page={SIGNUP_PAGE} />
+        </div>
+      </section>
+    </div>
+  );
 }
 
-class SignUp extends Component<InjectedFormProps & DispatchProps> {
-  state = {
-    errMessage: '',
-    loading: false
-  };
-
-  signUp = async ({ email, password }: Types.EmailProps) => {
-    try {
-      this.setState({ loading: true });
-      const resp = await axios.post('/auth/signup', { email, password });
-      this.props.setUser(resp.data);
-      this.props.history.push('/dashboard');
-    } catch (err) {
-      if (!err.response || err.response.status === 504) {
-        this.setState({
-          errMessage: 'Server timed out. Please try again later.',
-          loading: false
-        });
-      } else {
-        this.setState({ errMessage: err.response.data.error, loading: false });
-      }
-    }
-  };
-
-  render() {
-    return (
-      <div>
-        <Header authPage={true} />
-        <section className="section vcenter">
-          <div className="container is-widescreen">
-            <form onSubmit={this.props.handleSubmit(this.signUp)}>
-              <EmailFields
-                buttonText="Sign Up"
-                errMessage={this.state.errMessage}
-                loading={this.state.loading}
-              />
-            </form>
-          </div>
-        </section>
-      </div>
-    );
-  }
-}
-
-export default compose(
-  connect(
-    null,
-    { setUser }
-  ),
-  reduxForm({ form: 'signup' })
-)(SignUp);
+export default SignUp;

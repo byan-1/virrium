@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { FETCH_USER, SET_USER, SIGN_OUT } from './types';
 import { Dispatch } from 'redux';
 import { History } from 'history';
+import { FETCH_USER, SET_USER, SIGN_OUT } from '../config';
 
 export const fetchUser = (): Types.AsyncAction => async (
   dispatch: Dispatch

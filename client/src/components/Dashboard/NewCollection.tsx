@@ -123,7 +123,7 @@ class NewCollection extends PureComponent<
   render() {
     return (
       <div>
-        <Header authPage={false} />
+        <Header />
         <div className="container">
           <h1>Create a new collection</h1>
           <form onSubmit={this.props.handleSubmit(this.createCollection)}>

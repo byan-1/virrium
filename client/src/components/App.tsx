@@ -11,6 +11,14 @@ import EditCollection from './Dashboard/EditCollection';
 import { fetchUser } from '../actions/index';
 import ReqSignedIn from './HOC/ReqSignedIn';
 import ReqSignedOut from './HOC/ReqSignedOut';
+import {
+  HOME_PATH,
+  SIGNIN_PATH,
+  DASHBOARD_PATH,
+  SIGNUP_PATH,
+  NEWCOL_PATH,
+  EDITCOL_PATH
+} from '../config';
 
 type DispatchProps = {
   fetchUser: Function;
@@ -24,14 +32,18 @@ class App extends Component<DispatchProps, {}> {
   render() {
     return (
       <BrowserRouter>
-        <Route exact path="/" component={ReqSignedOut(Landing)} />
-        <Route exact path="/signin" component={ReqSignedOut(Signin)} />
-        <Route exact path="/dashboard" component={ReqSignedIn(Dashboard)} />
-        <Route exact path="/signup" component={ReqSignedOut(SignUp)} />
-        <Route exact path="/new" component={ReqSignedIn(NewCollection)} />
+        <Route exact path={HOME_PATH} component={ReqSignedOut(Landing)} />
+        <Route exact path={SIGNIN_PATH} component={ReqSignedOut(Signin)} />
+        <Route exact path={DASHBOARD_PATH} component={ReqSignedIn(Dashboard)} />
+        <Route exact path={SIGNUP_PATH} component={ReqSignedOut(SignUp)} />
         <Route
           exact
-          path="/collection/:id"
+          path={NEWCOL_PATH}
+          component={ReqSignedIn(NewCollection)}
+        />
+        <Route
+          exact
+          path={EDITCOL_PATH}
           component={ReqSignedIn(EditCollection)}
         />
       </BrowserRouter>
