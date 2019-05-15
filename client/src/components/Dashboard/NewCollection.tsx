@@ -10,6 +10,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import shortid from 'shortid';
 import QuestionForm from './Forms/QuestionForm';
 import { QUESAPI_PATH, DASHBOARD_PATH } from '../../config';
+import CollectionForm from './Forms/CollectionForm';
 
 type StateProps = {
   auth: Types.UserState;
@@ -25,16 +26,6 @@ class NewCollection extends PureComponent<
 > {
   state: ComponentState = {
     questions: {}
-  };
-
-  createCollection = async ({ title }: Types.NewCollection) => {
-    if (this.props.auth) {
-      await axios.post(QUESAPI_PATH + this.props.auth.id, {
-        title,
-        questions: Object.values(this.state.questions)
-      });
-      this.props.history.push(DASHBOARD_PATH);
-    }
   };
 
   questionChange = (event: React.FormEvent<any>) => {
@@ -69,7 +60,7 @@ class NewCollection extends PureComponent<
     });
   };
 
-  renderQuestions() {
+  renderQuestions = () => {
     const qArr: Array<JSX.Element> = [];
     Object.keys(this.state.questions).forEach(id => {
       qArr.push(
@@ -97,7 +88,18 @@ class NewCollection extends PureComponent<
       );
     });
     return qArr;
-  }
+  };
+
+    createCollection = async ({ title }: Types.NewCollection) => {
+    if (this.props.auth) {
+      await axios.post(QUESAPI_PATH + this.props.auth.id, {
+        title,
+        questions: Object.values(this.state.questions)
+      });
+      this.props.history.push(DASHBOARD_PATH);
+    }
+  };
+
 
   addQuestion = ({ question, answer }: Types.FormQuestion) => {
     const id = shortid.generate();
@@ -127,27 +129,10 @@ class NewCollection extends PureComponent<
         <Header />
         <div className="container">
           <h1>Create a new collection</h1>
-          <form onSubmit={this.props.handleSubmit(this.createCollection)}>
-            <button className="button is-dark is-medium formbtn">
-              Create Collection
-            </button>
-            <fieldset className="field">
-              <label className="label">Name</label>
-              <div className="control">
-                <Field
-                  name="title"
-                  type="text"
-                  component="input"
-                  autoComplete="none"
-                  className="input is-medium"
-                />
-              </div>
-            </fieldset>
-            <nav className="panel">
-              <p className="panel-heading">Questions</p>
-              {this.renderQuestions()}
-            </nav>
-          </form>
+          <CollectionForm
+            submitAction={this.createCollection}
+            renderJSX={this.renderQuestions()}
+          />
           <QuestionForm submitAction={this.addQuestion} />
         </div>
       </div>
