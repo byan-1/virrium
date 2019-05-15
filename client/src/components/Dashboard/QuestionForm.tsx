@@ -5,37 +5,35 @@ interface OwnProps {
   submitAction: (FormProps: Types.FormQuestion) => void;
 }
 
-class QuestionForm extends Component<
-  OwnProps & InjectedFormProps<{}, OwnProps>
-> {
-  wrappedSubmit = (formProps: Types.FormQuestion) => {
-    this.props.submitAction(formProps);
-    this.props.reset();
+function QuestionForm(props: OwnProps & InjectedFormProps) {
+  const wrappedSubmit = (formProps: Types.FormQuestion) => {
+    props.submitAction(formProps);
+    props.reset();
   };
 
-  render() {
-    return (
-      <form onSubmit={this.props.handleSubmit(this.wrappedSubmit)}>
-        <Field
-          name="question"
-          className="input"
-          type="text"
-          component="input"
-          placeholder="Type question here"
-        />
-        <Field
-          name="answer"
-          type="text"
-          component="textarea"
-          className="textarea"
-          placeholder="Type answer here"
-        />
-        <button type="submit" className="button is-dark is-medium formbtn">
-          Add Question
-        </button>
-      </form>
-    );
-  }
+  return (
+    <form onSubmit={props.handleSubmit(wrappedSubmit)}>
+      <Field
+        name="question"
+        className="input"
+        type="text"
+        component="input"
+        placeholder="Type question here"
+        autoComplete="off"
+      />
+      <Field
+        name="answer"
+        type="text"
+        component="textarea"
+        className="textarea"
+        placeholder="Type answer here"
+        autoComplete="off"
+      />
+      <button type="submit" className="button is-dark is-medium formbtn">
+        Add Question
+      </button>
+    </form>
+  );
 }
 
 export default reduxForm<{}, OwnProps>({ form: 'QuestionForm' })(QuestionForm);

@@ -1,5 +1,5 @@
 import './NewCollection.scss';
-import React, { PureComponent, FormEvent } from 'react';
+import React, { PureComponent } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { reduxForm, Field, InjectedFormProps } from 'redux-form';
@@ -37,7 +37,6 @@ class NewCollection extends PureComponent<
   };
 
   questionChange = (event: React.FormEvent<any>) => {
-    event.persist();
     const id = event.currentTarget.getAttribute('id');
     const elem = event.target as HTMLInputElement;
     this.setState((prevState: any) => {
@@ -54,7 +53,6 @@ class NewCollection extends PureComponent<
   };
 
   answerChange = (event: React.FormEvent<any>) => {
-    event.persist();
     const id = event.currentTarget.getAttribute('id');
     const elem = event.target as HTMLInputElement;
     this.setState((prevState: ComponentState) => {
