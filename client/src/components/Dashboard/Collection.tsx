@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { QUESAPI_PATH, NEWCOL_PATH } from '../../config';
+import { QUESAPI_PATH, NEWCOL_PATH, COLAPI_PATH } from '../../config';
 
 interface StateProps {
   auth: Types.UserState;
@@ -44,7 +44,7 @@ class Collection extends Component<StateProps, ComponentState> {
                 Practice
               </Link>
               <Link
-                to={'/collection/' + collection.id}
+                to={COLAPI_PATH + collection.id}
                 className="button is-dark is-medium"
               >
                 Edit
@@ -64,8 +64,6 @@ class Collection extends Component<StateProps, ComponentState> {
     if (this.props.auth) {
       try {
         await axios.delete(`${QUESAPI_PATH + this.props.auth.id}/${qid}`);
-        console.log(this.state.collections);
-        console.log(qid);
         this.setState(() => {
           return this.state.collections
             ? {

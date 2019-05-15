@@ -5,15 +5,16 @@ export const SIGN_OUT = 'SIGN_OUT';
 
 //URL paths
 export const HOME_PATH = '/';
-export const SIGNIN_PATH = '/signin';
-export const DASHBOARD_PATH = '/dashboard';
-export const SIGNUP_PATH = '/signup';
-export const NEWCOL_PATH = '/new';
-export const EDITCOL_PATH = '/collection/:id';
+export const SIGNIN_PATH = '/signin/';
+export const DASHBOARD_PATH = '/dashboard/';
+export const SIGNUP_PATH = '/signup/';
+export const NEWCOL_PATH = '/new/';
+export const EDITCOL_PATH = '/collection/';
 export const EAUTH_PATH = '/auth/email/';
-export const FBAUTH_PATH = '/auth/facebook';
-export const GAUTH_PATH = '/auth/google';
-export const QUESAPI_PATH = '/api/question';
+export const FBAUTH_PATH = '/auth/facebook/';
+export const GAUTH_PATH = '/auth/google/';
+export const QUESAPI_PATH = '/api/question/';
+export const COLAPI_PATH = '/collection/';
 
 //header config
 export const AUTH_HEADER = 'auth';

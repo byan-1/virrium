@@ -20,12 +20,7 @@ interface OwnProps extends RouteComponentProps {
 class Header extends Component<StateProps & DispatchProps & OwnProps, {}> {
   static defaultProps: { page: 'regular' };
 
-  pageOptions = {
-    auth: { hNav: this.renderHome },
-    regular: { hNav: this.renderAuth }
-  };
-
-  renderAuth() {
+  renderAuth = () => {
     switch (this.props.auth) {
       case null:
         return;
@@ -45,15 +40,20 @@ class Header extends Component<StateProps & DispatchProps & OwnProps, {}> {
           </a>
         );
     }
-  }
+  };
 
-  renderHome() {
+  renderHome = () => {
     return (
       <Link className="navbar-item" to={HOME_PATH}>
         Return to Home
       </Link>
     );
-  }
+  };
+
+  pageOptions = {
+    auth: { hNav: this.renderHome },
+    regular: { hNav: this.renderAuth }
+  };
 
   render() {
     return (
@@ -67,6 +67,10 @@ class Header extends Component<StateProps & DispatchProps & OwnProps, {}> {
     );
   }
 }
+
+Header.defaultProps = {
+  page: 'regular'
+};
 
 function mapStateToProps(state: Types.State): Types.AuthState {
   return { auth: state.auth };

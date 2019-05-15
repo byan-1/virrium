@@ -8,7 +8,8 @@ import axios from 'axios';
 import TextareaAutosize from 'react-autosize-textarea';
 import { RouteComponentProps } from 'react-router-dom';
 import shortid from 'shortid';
-import QuestionForm from './QuestionForm';
+import QuestionForm from './Forms/QuestionForm';
+import { QUESAPI_PATH, DASHBOARD_PATH } from '../../config';
 
 type StateProps = {
   auth: Types.UserState;
@@ -28,11 +29,11 @@ class NewCollection extends PureComponent<
 
   createCollection = async ({ title }: Types.NewCollection) => {
     if (this.props.auth) {
-      await axios.post('/api/question/' + this.props.auth.id, {
+      await axios.post(QUESAPI_PATH + this.props.auth.id, {
         title,
         questions: Object.values(this.state.questions)
       });
-      this.props.history.push('/dashboard');
+      this.props.history.push(DASHBOARD_PATH);
     }
   };
 
