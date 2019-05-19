@@ -1,17 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { reduxForm, Field, InjectedFormProps } from 'redux-form';
 
 interface OwnProps {
   submitAction: (FormProps: Types.NewCollection) => void;
-  renderJSX: Array<JSX.Element>;
+  renderJSX: any;
+  btnText: string;
+  initVal?: string | null;
 }
 
-function CollectionForm(props: OwnProps & InjectedFormProps) {
+function CollectionForm({
+  submitAction,
+  renderJSX,
+  btnText,
+  initialize,
+  handleSubmit,
+  initVal = null
+}: OwnProps & InjectedFormProps) {
+  if (initVal !== null)
+    useEffect(() => {
+      initialize({ title: initVal });
+    }, []);
+    useEffect(() => {
+
+    })
   return (
-    <form onSubmit={props.handleSubmit(props.submitAction)}>
-      <button className="button is-dark is-medium formbtn">
-        Create Collection
-      </button>
+    <form onSubmit={handleSubmit(submitAction)}>
+      <button className="button is-dark is-medium formbtn">{btnText}</button>
       <fieldset className="field">
         <label className="label">Name</label>
         <div className="control">
@@ -26,12 +40,12 @@ function CollectionForm(props: OwnProps & InjectedFormProps) {
       </fieldset>
       <nav className="panel">
         <p className="panel-heading">Questions</p>
-        {props.renderJSX}
+        {renderJSX}
       </nav>
     </form>
   );
 }
 
-export default reduxForm<{}, OwnProps>({ form: 'QuestionForm' })(
+export default reduxForm<{}, OwnProps>({ form: 'CollectionForm' })(
   CollectionForm
 );

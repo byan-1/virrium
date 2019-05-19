@@ -14,7 +14,7 @@ export const EAUTH_PATH = '/auth/email/';
 export const FBAUTH_PATH = '/auth/facebook/';
 export const GAUTH_PATH = '/auth/google/';
 export const QUESAPI_PATH = '/api/question/';
-export const COLAPI_PATH = '/collection/';
+export const COL_PATH = '/collection/';
 
 //header config
 export const AUTH_HEADER = 'auth';

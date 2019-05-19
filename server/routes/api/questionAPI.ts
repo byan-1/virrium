@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { QuestionRequest } from '@types';
+import { QuestionRequest, QuestionQuery } from '@types';
 const express = require('express');
 const QuestionSet = require('../../models/QuestionSet');
 const Question = require('../../models/Question');
@@ -30,7 +30,7 @@ router.post(
     const name = req.body.title;
     const questions = req.body.questions;
     if (!name || name.length > 255) {
-      res.status(422);
+      res.status(422).send({ error: 'Please enter a title' });
       return;
     }
     try {
@@ -66,15 +66,9 @@ router.post(
   }
 );
 
-//update a question collection for the user
-router.patch(
-  '/:uid/:qset_id/',
-  (req: Request, res: Response, next: NextFunction) => {}
-);
-
 //delete a question collection for the user
 router.delete(
-  '/:uid/:qset_id',
+  '/qset/:qset_id',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const existingQSet = await QuestionSet.query().findOne({
@@ -99,7 +93,7 @@ router.delete(
 
 //get all questions in a collection from a user
 router.get(
-  '/:uid/:qset_id',
+  '/qset/:qset_id',
   async (req: Request, res: Response, next: NextFunction) => {
     const qset_id = req.params.qset_id;
     try {
@@ -110,10 +104,13 @@ router.get(
         res.status(422).send({ error: 'Collection does not exist' });
         return;
       }
-      const result = await Question.query()
+      const questions = await Question.query()
         .where('qset_id', '=', qset_id)
         .orderBy('id');
-      res.send(result);
+      const title = await QuestionSet.query()
+        .select('id', 'name')
+        .where('id', '=', qset_id);
+      res.send({ id: title[0].id, title: title[0].name, questions });
     } catch (err) {
       next(err);
     }
@@ -122,7 +119,7 @@ router.get(
 
 //create a question under a collection for a user
 router.post(
-  '/:uid/:qset_id',
+  '/qset/:qset_id',
   async (req: Request, res: Response, next: NextFunction) => {
     const qsetid = req.body.qset_id;
     const question = req.body.question;
@@ -135,6 +132,33 @@ router.post(
     } catch (err) {
       next(err);
     }
+  }
+);
+
+//edit a collection
+router.patch(
+  '/qset/:qset_id',
+  async (req: Request, res: Response, next: NextFunction) => {
+    const questions: Array<QuestionQuery> = [];
+    Object.entries(req.body.questions).forEach(
+      ([id, qData]: [string, QuestionRequest]) => {
+        const question: QuestionQuery = {};
+        if (id[0] !== 'N') {
+          question.id = id;
+        }
+        question.q = qData.question;
+        question.a = qData.answer;
+        question.qset_id = req.params.qset_id;
+        questions.push(question);
+      }
+    );
+    const qsetQuery = {
+      id: req.params.qset_id,
+      name: req.body.title,
+      question: questions
+    };
+    const dbResp = await QuestionSet.query().upsertGraph(qsetQuery);
+    res.send(dbResp);
   }
 );
 

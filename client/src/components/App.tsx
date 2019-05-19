@@ -43,7 +43,7 @@ class App extends Component<DispatchProps, {}> {
         />
         <Route
           exact
-          path={EDITCOL_PATH}
+          path={EDITCOL_PATH + ':qid'}
           component={ReqSignedIn(EditCollection)}
         />
       </BrowserRouter>

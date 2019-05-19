@@ -17,6 +17,13 @@ export type OAuth = {
 };
 
 export interface QuestionRequest {
-  question: string;
-  answer: string;
+  question?: string;
+  answer?: string;
+}
+
+export interface QuestionQuery {
+  id?: string;
+  q?: string;
+  a?: string;
+  qset_id?: string;
 }

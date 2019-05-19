@@ -1,4 +1,5 @@
 import { Dispatch } from 'react';
+import { InjectedFormProps } from 'redux-form';
 
 export as namespace Types;
 
@@ -33,16 +34,37 @@ export type NewCollection = {
 
 export type AsyncAction = (dispatch: Dispatch) => Promise<void>;
 
-interface Question {
+export interface Question {
   question: string;
   answer: string;
 }
 
-export type Questions = {
+type Questions = {
   [id: string]: Question;
 };
 
 export type FormQuestion = {
   question: string;
   answer: string;
+};
+
+export type DeleteFcn = (Action: React.EventHandler<any>) => any;
+
+export interface InjectedCollectionProps {
+  questions: { questions: Questions };
+  renderQuestions: () => Array<JSX.Element>;
+  addQuestion: ({ question, answer }: FormQuestion) => void;
+  removeQuestion: (id: string | number) => void;
+  setQuestions: (questions: Questions) => void;
+}
+
+{
+  id, q, a, performance;
+}
+
+export type QAPIResp = {
+  id: number;
+  q: string;
+  a: string;
+  performance: number;
 };

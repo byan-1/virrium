@@ -5,7 +5,7 @@ interface OwnProps {
   submitAction: (FormProps: Types.FormQuestion) => void;
 }
 
-function QuestionForm(props: OwnProps & InjectedFormProps) {
+const QuestionForm = (props: OwnProps & InjectedFormProps) => {
   const wrappedSubmit = (formProps: Types.FormQuestion) => {
     props.submitAction(formProps);
     props.reset();
@@ -34,6 +34,6 @@ function QuestionForm(props: OwnProps & InjectedFormProps) {
       </button>
     </form>
   );
-}
+};
 
 export default reduxForm<{}, OwnProps>({ form: 'QuestionForm' })(QuestionForm);

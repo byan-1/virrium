@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { QUESAPI_PATH, NEWCOL_PATH, COLAPI_PATH } from '../../config';
+import { QUESAPI_PATH, NEWCOL_PATH, COL_PATH } from '../../config';
 
 interface StateProps {
   auth: Types.UserState;
@@ -18,7 +18,7 @@ interface CollectionType {
   name: string;
 }
 
-class Collection extends Component<StateProps, ComponentState> {
+class Collection extends PureComponent<StateProps, ComponentState> {
   state: ComponentState = {
     collections: null
   };
@@ -44,13 +44,13 @@ class Collection extends Component<StateProps, ComponentState> {
                 Practice
               </Link>
               <Link
-                to={COLAPI_PATH + collection.id}
+                to={COL_PATH + collection.id}
                 className="button is-dark is-medium"
               >
                 Edit
               </Link>
               <button
-                onClick={() => this.removeQuestion(collection.id)}
+                onClick={() => this.removeCollection(collection.id)}
                 className="button is-dark is-medium"
               >
                 Delete
@@ -60,22 +60,20 @@ class Collection extends Component<StateProps, ComponentState> {
         });
   }
 
-  async removeQuestion(qid: number) {
-    if (this.props.auth) {
-      try {
-        await axios.delete(`${QUESAPI_PATH + this.props.auth.id}/${qid}`);
-        this.setState(() => {
-          return this.state.collections
-            ? {
-                collections: this.state.collections.filter(
-                  collection => collection.id !== qid
-                )
-              }
-            : { collections: null };
-        });
-      } catch (err) {
-        console.log(err);
-      }
+  async removeCollection(cid: number) {
+    try {
+      await axios.delete(`${QUESAPI_PATH}qset/${cid}`);
+      this.setState(() => {
+        return this.state.collections
+          ? {
+              collections: this.state.collections.filter(
+                collection => collection.id !== cid
+              )
+            }
+          : { collections: null };
+      });
+    } catch (err) {
+      console.log(err);
     }
   }
 
