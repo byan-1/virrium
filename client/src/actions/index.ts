@@ -1,23 +1,27 @@
 import axios from 'axios';
-import { Dispatch } from 'redux';
-import { History } from 'history';
-import { FETCH_USER, SET_USER, SIGN_OUT } from '../config';
+import {History} from 'history';
+import {Dispatch} from 'redux';
 
-export const fetchUser = (): Types.AsyncAction => async (
-  dispatch: Dispatch
-): Promise<void> => {
+import {FETCH_USER, SET_QUESTION, SET_USER, SIGN_OUT} from '../config';
+
+export const fetchUser = (): Types.AsyncAction =>
+    async(dispatch: Dispatch): Promise<void> => {
   const res = await axios.get('/auth/current_user');
-  dispatch({ type: FETCH_USER, payload: res.data });
+  dispatch({type: FETCH_USER, payload: res.data});
 };
 
 export const setUser = (user: Types.UserState): Types.Action => {
-  return { type: SET_USER, payload: user };
+  return {type: SET_USER, payload: user};
 };
 
-export const signOut = (history: History): Types.AsyncAction => async (
-  dispatch: Dispatch
-): Promise<void> => {
+export const signOut = (history: History): Types.AsyncAction =>
+    async(dispatch: Dispatch): Promise<void> => {
   await axios.post('/auth/logout');
-  dispatch({ type: SIGN_OUT });
+  dispatch({type: SIGN_OUT});
   history.push('/');
 };
+
+export const setCurQuestion =
+    (cid: string, question: Types.QAPIResp): Types.Action => {
+      return {type: SET_QUESTION, payload: {[cid]: question}};
+    }

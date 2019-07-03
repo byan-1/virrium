@@ -17,8 +17,10 @@ import {
   DASHBOARD_PATH,
   SIGNUP_PATH,
   NEWCOL_PATH,
-  EDITCOL_PATH
+  EDITCOL_PATH,
+  PRAC_PATH
 } from '../config';
+import PracticeCollection from './Dashboard/PracticeCollection';
 
 type DispatchProps = {
   fetchUser: Function;
@@ -45,6 +47,11 @@ class App extends Component<DispatchProps, {}> {
           exact
           path={EDITCOL_PATH + ':qid'}
           component={ReqSignedIn(EditCollection)}
+        />
+        <Route
+          exact
+          path={PRAC_PATH + ':cid'}
+          component={ReqSignedIn(PracticeCollection)}
         />
       </BrowserRouter>
     );

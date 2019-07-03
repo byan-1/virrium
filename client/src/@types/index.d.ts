@@ -1,17 +1,19 @@
-import { Dispatch } from 'react';
-import { InjectedFormProps } from 'redux-form';
+import {Dispatch} from 'react';
+import {InjectedFormProps} from 'redux-form';
 
 export as namespace Types;
 
-export type UserState =
-  | {
-      id: number;
-    }
-  | false;
+export type UserState =|{
+  id: number;
+}
+|false;
+
+export type QuestionState = {
+  [cid: string]: QAPIResp;
+};
 
 export type State = {
-  auth: UserState;
-  form: object;
+  auth: UserState; form: object; question: QuestionState
 };
 
 export type AuthState = {
@@ -24,8 +26,7 @@ interface Action {
 }
 
 export type EmailProps = {
-  email: string;
-  password: string;
+  email: string; password: string;
 };
 
 export type NewCollection = {
@@ -44,27 +45,19 @@ type Questions = {
 };
 
 export type FormQuestion = {
-  question: string;
-  answer: string;
+  question: string; answer: string;
 };
 
 export type DeleteFcn = (Action: React.EventHandler<any>) => any;
 
 export interface InjectedCollectionProps {
-  questions: { questions: Questions };
+  questions: {questions: Questions};
   renderQuestions: () => Array<JSX.Element>;
-  addQuestion: ({ question, answer }: FormQuestion) => void;
-  removeQuestion: (id: string | number) => void;
+  addQuestion: ({question, answer}: FormQuestion) => void;
+  removeQuestion: (id: string|number) => void;
   setQuestions: (questions: Questions) => void;
 }
 
-{
-  id, q, a, performance;
-}
-
 export type QAPIResp = {
-  id: number;
-  q: string;
-  a: string;
-  performance: number;
+  id: number; q: string; a: string; performance: number;
 };

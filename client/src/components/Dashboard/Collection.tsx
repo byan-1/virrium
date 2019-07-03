@@ -2,7 +2,12 @@ import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { QUESAPI_PATH, NEWCOL_PATH, COL_PATH } from '../../config';
+import {
+  QUESAPI_PATH,
+  NEWCOL_PATH,
+  EDITCOL_PATH,
+  PRAC_PATH
+} from '../../config';
 
 interface StateProps {
   auth: Types.UserState;
@@ -40,11 +45,14 @@ class Collection extends PureComponent<StateProps, ComponentState> {
           return (
             <p key={collection.id} className="panel-block">
               {collection.name}
-              <Link to="" className="button is-dark is-medium">
+              <Link
+                to={PRAC_PATH + collection.id}
+                className="button is-dark is-medium"
+              >
                 Practice
               </Link>
               <Link
-                to={COL_PATH + collection.id}
+                to={EDITCOL_PATH + collection.id}
                 className="button is-dark is-medium"
               >
                 Edit
