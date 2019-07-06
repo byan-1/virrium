@@ -37,7 +37,7 @@ class PracticeCollection extends PureComponent<
   colId = this.props.match.params.cid;
   async componentDidMount() {
     const qid = this.props.question[this.colId]
-      ? this.props.question[this.colId]
+      ? this.props.question[this.colId].id
       : 0;
     const resp = await axios.get(`${QUESAPI_PATH}qset/${this.colId}/${qid}`);
     this.props.setCurQuestion(this.colId, resp.data);
@@ -59,7 +59,13 @@ class PracticeCollection extends PureComponent<
   };
 
   submitAction = async () => {
-    const resp = await axios.post('/api/score/', { ans: this.state.answer });
+    const qid = this.props.question[this.colId]
+      ? this.props.question[this.colId].id
+      : 0;
+    const resp = await axios.post('/api/score/', {
+      qid,
+      ans: this.state.answer
+    });
     console.log(resp.data);
   };
 

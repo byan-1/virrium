@@ -20,8 +20,12 @@ print('Finished loading model in %.1f sec' % ((time.time()-start)))
 stop_words = stopwords.words('english')
 
 def compare(s1, s2):
+    print(s1)
+    print(s2)
     sentence_one = s1.lower().split()
     sentence_two = s2.lower().split()
+    print(sentence_one)
+    print(sentence_two)
     sentence_one = [w for w in sentence_one if w not in stop_words]
     sentence_two = [w for w in sentence_two if w not in stop_words]
     dist = model.wv.n_similarity(sentence_one, sentence_two)

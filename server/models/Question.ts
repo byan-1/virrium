@@ -19,6 +19,10 @@ class Question extends Model {
       }
     };
   }
+
+  static deleteQuestion(qid : number) {
+    
+  }
 }
 
 module.exports = Question;
