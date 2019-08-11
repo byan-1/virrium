@@ -21,6 +21,7 @@ import {
   PRAC_PATH
 } from '../config';
 import PracticeCollection from './Dashboard/PracticeCollection';
+import ScorePage from './Dashboard/ScorePage';
 
 type DispatchProps = {
   fetchUser: Function;
@@ -53,6 +54,7 @@ class App extends Component<DispatchProps, {}> {
           path={PRAC_PATH + ':cid'}
           component={ReqSignedIn(PracticeCollection)}
         />
+        <Route exact path='/score' component={ReqSignedIn(ScorePage)} />
       </BrowserRouter>
     );
   }

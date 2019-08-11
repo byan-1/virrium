@@ -3,11 +3,12 @@ import axios from 'axios';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter, RouteComponentProps } from 'react-router';
-import { QUESAPI_PATH } from '../../config';
 import Header from '../Header';
+import { QUESAPI_PATH } from '../../config';
 import { setCurQuestion } from '../../actions';
 import { QAPIResp } from '../../@types';
 import TextareaAutosize from 'react-autosize-textarea/lib';
+import { Link } from 'react-router-dom';
 
 interface Params {
   cid: string;
@@ -20,12 +21,6 @@ type StateProps = {
 interface ActionProps {
   setCurQuestion: (cid: string, question: QAPIResp) => Types.Action;
 }
-
-//todo
-//title page gets the default first question through special flag
-//render the question
-//submit button shows answer/score
-//next question increments current question to the next highest id
 
 class PracticeCollection extends PureComponent<
   StateProps & RouteComponentProps<Params> & ActionProps
@@ -66,7 +61,7 @@ class PracticeCollection extends PureComponent<
       qid,
       ans: this.state.answer
     });
-    console.log(resp.data);
+    this.props.history.push('/score', { score: resp.data.similarity });
   };
 
   render() {

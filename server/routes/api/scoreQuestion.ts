@@ -6,6 +6,11 @@ const axios = require('axios');
 const Question = require('../../models/Question');
 const QPerformance = require('../../models/QPerformance');
 
+router.get(
+  '/next',
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {}
+);
+
 router.post(
   '/',
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -39,3 +44,5 @@ module.exports = router;
 // todo:
 // get frontend practice page to show score
 // get frontend practice page to cycle through questions
+// handle empty question sets
+// implement api to get total performance of a question
