@@ -54,7 +54,7 @@ class App extends Component<DispatchProps, {}> {
           path={PRAC_PATH + ':cid'}
           component={ReqSignedIn(PracticeCollection)}
         />
-        <Route exact path='/score' component={ReqSignedIn(ScorePage)} />
+        <Route exact path='/score/:qset_id' component={ReqSignedIn(ScorePage)} />
       </BrowserRouter>
     );
   }

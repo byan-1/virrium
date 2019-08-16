@@ -1,12 +1,12 @@
-import React, { PureComponent, ComponentState } from 'react';
-import axios from 'axios';
-import { compose } from 'redux';
-import { withRouter, RouteComponentProps } from 'react-router';
-import PracticeCollection from './PracticeCollection';
-import { setCurQuestion } from '../../actions';
-import { QAPIResp } from '../../@types';
-import Header from '../Header';
-import { connect } from 'react-redux';
+import React, { PureComponent, ComponentState } from "react";
+import axios from "axios";
+import { compose } from "redux";
+import { withRouter, RouteComponentProps } from "react-router";
+import PracticeCollection from "./PracticeCollection";
+import { setCurQuestion } from "../../actions";
+import { QAPIResp } from "../../@types";
+import Header from "../Header";
+import { connect } from "react-redux";
 
 //display submitted and correct answer
 //display given score
@@ -16,6 +16,7 @@ import { connect } from 'react-redux';
 
 interface Params {
   cid: string;
+  qset_id: string;
 }
 
 type StateProps = {
@@ -31,16 +32,23 @@ class ScorePage extends PureComponent<
   StateProps & RouteComponentProps<Params> & ActionProps
 > {
   state: ComponentState = {
-    answer: ''
+    answer: ""
   };
 
-  componentDidMount() {
-    console.log(this.props.location.state.score);
-  }
-
-  getNextQuestion() {
-    
-  }
+  getNextQuestion = async () => {
+    const resp = await axios.get(
+      `/api/score/next/${this.props.match.params.qset_id}`
+    );
+    console.log(resp.data);
+    const question = resp.data;
+    this.props.setCurQuestion(question.qset_id, {
+      id: question.id,
+      q: question.q,
+      a: question.a,
+      performance: question.performance
+    });
+    this.props.history.push("/practice/" + this.props.match.params.qset_id);
+  };
 
   render() {
     return (
@@ -48,7 +56,7 @@ class ScorePage extends PureComponent<
         <Header />
         <h1>{this.props.location.state.score}</h1>
         <button
-          //onClick={}
+          onClick={this.getNextQuestion}
           className="button is-dark is-medium"
         >
           Next Question

@@ -1,14 +1,13 @@
-import React, { PureComponent, ComponentState } from 'react';
-import axios from 'axios';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { withRouter, RouteComponentProps } from 'react-router';
-import Header from '../Header';
-import { QUESAPI_PATH } from '../../config';
-import { setCurQuestion } from '../../actions';
-import { QAPIResp } from '../../@types';
-import TextareaAutosize from 'react-autosize-textarea/lib';
-import { Link } from 'react-router-dom';
+import React, { PureComponent, ComponentState } from "react";
+import axios from "axios";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { withRouter, RouteComponentProps } from "react-router";
+import Header from "../Header";
+import { QUESAPI_PATH } from "../../config";
+import { setCurQuestion } from "../../actions";
+import { QAPIResp } from "../../@types";
+import TextareaAutosize from "react-autosize-textarea/lib";
 
 interface Params {
   cid: string;
@@ -26,7 +25,7 @@ class PracticeCollection extends PureComponent<
   StateProps & RouteComponentProps<Params> & ActionProps
 > {
   state: ComponentState = {
-    answer: ''
+    answer: ""
   };
 
   colId = this.props.match.params.cid;
@@ -35,7 +34,16 @@ class PracticeCollection extends PureComponent<
       ? this.props.question[this.colId].id
       : 0;
     const resp = await axios.get(`${QUESAPI_PATH}qset/${this.colId}/${qid}`);
-    this.props.setCurQuestion(this.colId, resp.data);
+    const question = resp.data;
+    console.log(question);
+    if (!this.props.question[this.colId]) {
+      this.props.setCurQuestion(this.colId, {
+        id: question.id,
+        q: question.q,
+        a: question.a,
+        performance: question.performance
+      });
+    }
   }
 
   renderQuestion() {
@@ -57,11 +65,13 @@ class PracticeCollection extends PureComponent<
     const qid = this.props.question[this.colId]
       ? this.props.question[this.colId].id
       : 0;
-    const resp = await axios.post('/api/score/', {
+    const resp = await axios.post("/api/score/", {
       qid,
       ans: this.state.answer
     });
-    this.props.history.push('/score', { score: resp.data.similarity });
+    this.props.history.push("/score/" + this.colId, {
+      score: resp.data.similarity
+    });
   };
 
   render() {
