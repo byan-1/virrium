@@ -1,29 +1,27 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router-dom';
-import { InjectedFormProps } from 'redux-form';
+import React, { Component, ReactNode } from "react";
+import { connect } from "react-redux";
+import { RouteComponentProps } from "react-router-dom";
+import { InjectedFormProps } from "redux-form";
 
 interface StateProps extends RouteComponentProps {
   auth: Types.UserState;
 }
 
-export default (
-  ComposedComponent: React.ComponentType
-): React.ComponentType => {
+export default (ComposedComponent: any): any => {
   class ReqSignedIn extends Component<StateProps & InjectedFormProps> {
-    componentDidMount() {
+    public componentDidMount(): void {
       if (this.props.auth) {
-        this.props.history.replace('/dashboard');
+        this.props.history.replace("/dashboard");
       }
     }
 
-    componentDidUpdate() {
+    public componentDidUpdate(): void {
       if (this.props.auth) {
-        this.props.history.replace('/dashboard');
+        this.props.history.replace("/dashboard");
       }
     }
 
-    render() {
+    public render(): ReactNode {
       return <ComposedComponent {...this.props} />;
     }
   }

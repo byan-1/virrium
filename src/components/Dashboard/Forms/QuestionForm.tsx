@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { reduxForm, Field, InjectedFormProps } from 'redux-form';
 
 interface OwnProps {
   submitAction: (FormProps: Types.FormQuestion) => void;
 }
 
-const QuestionForm = (props: OwnProps & InjectedFormProps) => {
-  const wrappedSubmit = (formProps: Types.FormQuestion) => {
+const QuestionForm = (props: OwnProps & InjectedFormProps): ReactElement => {
+  const wrappedSubmit = (formProps: Types.FormQuestion): void => {
     props.submitAction(formProps);
     props.reset();
   };

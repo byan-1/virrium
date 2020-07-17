@@ -1,107 +1,136 @@
-import React, { PureComponent } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
-import { connect } from 'react-redux';
-import {
-  QUESAPI_PATH,
-  NEWCOL_PATH,
-  EDITCOL_PATH,
-  PRAC_PATH
-} from '../../config';
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import "./Collection.scss";
+import React, { PureComponent, ReactElement, ReactNode } from "react";
+import { Link } from "react-router-dom";
+import axios, { AxiosResponse } from "axios";
+import { connect } from "react-redux";
+import { QSetResp, QSet } from "../../common-utils/lib/QSetHelpers";
 
 interface StateProps {
   auth: Types.UserState;
+  search: string;
 }
 
 interface ComponentState {
-  collections: Array<CollectionType> | null;
-}
-
-interface CollectionType {
-  id: number;
-  uid: number;
-  name: string;
+  collections: QSetResp;
 }
 
 class Collection extends PureComponent<StateProps, ComponentState> {
-  state: ComponentState = {
-    collections: null
+  public state: ComponentState = {
+    collections: [],
   };
-  async getCollections() {
-    if (this.props.auth && !this.state.collections) {
-      try {
-        const collections = await axios.get(QUESAPI_PATH + this.props.auth.id);
-        this.setState({ collections: collections.data });
-      } catch (err) {
-        console.log(err);
-      }
+
+  public async componentDidMount(): Promise<void> {
+    if (this.props.auth != null && this.props.auth != false) {
+      this.setCollections(this.props.auth.id!);
     }
   }
 
-  renderCollections() {
-    return this.state.collections === null
-      ? null
-      : this.state.collections.map((collection: CollectionType) => {
-          return (
-            <p key={collection.id} className="panel-block">
-              {collection.name}
-              <Link
-                to={PRAC_PATH + collection.id}
-                className="button is-dark is-medium"
-              >
-                Practice
-              </Link>
-              <Link
-                to={EDITCOL_PATH + collection.id}
-                className="button is-dark is-medium"
-              >
-                Edit
-              </Link>
-              <button
-                onClick={() => this.removeCollection(collection.id)}
-                className="button is-dark is-medium"
-              >
-                Delete
-              </button>
-            </p>
-          );
-        });
+  private authLoaded(prevProps: StateProps): boolean {
+    return prevProps.auth != this.props.auth;
   }
 
-  async removeCollection(cid: number) {
+  public async componentDidUpdate(prevProps: StateProps): Promise<void> {
+    //makes API call to get collections when authentication state is updated
+    if (this.props.auth && this.authLoaded(prevProps)) {
+      this.setCollections(this.props.auth.id!);
+    }
+  }
+
+  private async setCollections(uid: number): Promise<void> {
+    const collectionResp: AxiosResponse<QSetResp> = await axios.get(
+      `/api/question/${uid}`
+    );
+    this.setState({ collections: collectionResp.data });
+  }
+
+  private searchFilter(): QSetResp {
+    if (this.props.search) {
+      return this.state.collections.filter((s): boolean =>
+        s.name.includes(this.props.search)
+      );
+    }
+    return this.state.collections;
+  }
+
+  private renderCollections(): ReactElement[] {
+    return this.searchFilter().map(
+      (collection: QSet): ReactElement => (
+        <div key={collection.id} className="box question-area">
+          <div className="set-title"> {collection.name}</div>
+          <p className="action-buttons">
+            <Link
+              to={`/practice/${collection.id}`}
+              className="button is-medium is-link is-outlined"
+            >
+              <span className="icon is-small">
+                <i className="fa fa-keyboard" />
+              </span>
+            </Link>
+            <Link
+              to={`/collection/${collection.id}`}
+              className="button is-medium is-link is-outlined"
+            >
+              <span className="icon is-small">
+                <i className="fa fa-cog" />
+              </span>
+            </Link>
+            <Link
+              to={`/stats/${collection.id}`}
+              className="button is-medium is-link is-outlined"
+            >
+              <span className="icon is-small">
+                <i className="fa fa-signal" />
+              </span>
+            </Link>
+            <button
+              onClick={(): Promise<void> =>
+                this.removeCollection(collection.id)
+              }
+              className="button is-medium is-danger is-outlined"
+            >
+              <span className="icon is-small">
+                <i className="fa fa-trash" />
+              </span>
+            </button>
+          </p>
+        </div>
+      )
+    );
+  }
+
+  private async removeCollection(cid: number): Promise<void> {
     try {
-      await axios.delete(`${QUESAPI_PATH}qset/${cid}`);
-      this.setState(() => {
-        return this.state.collections
-          ? {
-              collections: this.state.collections.filter(
-                collection => collection.id !== cid
-              )
-            }
-          : { collections: null };
-      });
+      await axios.delete(`api/question/qset/${cid}`);
+      this.setState(
+        (): ComponentState => {
+          return {
+            collections: this.state.collections.filter(
+              (collection): boolean => collection.id !== cid
+            ),
+          };
+        }
+      );
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log(err);
     }
   }
 
-  render() {
-    this.getCollections();
+  public render(): ReactNode {
     return (
       <div className="container">
-        <nav className="panel">
-          <p className="panel-heading">
-            <Link to={NEWCOL_PATH}>New Collection</Link>
-          </p>
-          {this.renderCollections()}
-        </nav>
+        <nav className="panel">{this.renderCollections()}</nav>
       </div>
     );
   }
 }
 
-function mapStateToProps({ auth }: Types.State): Types.AuthState {
-  return { auth };
+function mapStateToProps({
+  auth,
+  search,
+}: Types.State): Types.AuthState & Types.SearchState {
+  return { auth, search };
 }
 
 export default connect(mapStateToProps)(Collection);

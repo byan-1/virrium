@@ -1,5 +1,5 @@
 import './EmailFields.scss';
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import { reduxForm, Field, InjectedFormProps } from 'redux-form';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import axios from 'axios';
@@ -37,12 +37,12 @@ class EmailFields extends Component<
   OwnProps & ActionProps & InjectedFormProps & RouteComponentProps,
   {}
 > {
-  state = {
+  public state = {
     errMessage: '',
     loading: false
   };
 
-  authenticate = async ({ email, password }: Types.EmailProps) => {
+  public authenticate = async ({ email, password }: Types.EmailProps): Promise<void> => {
     try {
       this.setState({ loading: true });
       const resp = await axios.post(pageOptions[this.props.page].requestLink, {
@@ -63,7 +63,7 @@ class EmailFields extends Component<
     }
   };
 
-  render() {
+  public render(): ReactNode {
     return (
       <form onSubmit={this.props.handleSubmit(this.authenticate)}>
         <fieldset className="field">

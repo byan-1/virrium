@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import EmailFields from './EmailFields';
 import Header from '../Header';
 import { SIGNUP_PAGE, AUTH_HEADER } from '../../config';
 
-function SignUp() {
+function SignUp(): ReactElement {
   return (
     <div>
       <Header page={AUTH_HEADER} />

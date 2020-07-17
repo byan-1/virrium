@@ -3,8 +3,8 @@
   box-shadow: none !important;
 }
 
-.navbar-item {
-  display: flex;
+.search-bar {
+  margin-right: 8rem;
 }
 
 .navbar-menu,
@@ -20,12 +20,24 @@
   flex-shrink: 0;
 }
 
-.navbar-start {
-  justify-content: flex-start;
-  margin-right: auto;
+.navbar .navbar-start {
+  font-size: 26px;
+  margin-right: 3rem;
 }
 
-.navbar-end {
-  justify-content: flex-end;
-  margin-left: auto;
+.search-icon {
+  margin-right: 6px;
+  color: white;
+}
+
+.new-icon {
+  margin-right: 6px;
+}
+
+.new-set {
+  margin-right: 1rem;
+}
+
+.hidden {
+  visibility: hidden;
 }

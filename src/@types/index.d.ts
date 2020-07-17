@@ -1,24 +1,31 @@
-import {Dispatch} from 'react';
-import {InjectedFormProps} from 'redux-form';
+import { Dispatch } from "react";
 
 export as namespace Types;
 
-export type UserState =|{
-  id: number;
-}
-|false;
+export type UserState =
+  | {
+      id: number | null;
+    }
+  | false;
 
 export type QuestionState = {
   [cid: string]: QAPIResp;
 };
 
 export type State = {
-  auth: UserState; form: object; question: QuestionState
+  auth: UserState;
+  form: object;
+  question: QuestionState;
+  search: string;
 };
 
-export type AuthState = {
+export interface AuthState {
   auth: UserState;
-};
+}
+
+export interface SearchState {
+  search: string;
+}
 
 interface Action {
   type: string;
@@ -26,7 +33,8 @@ interface Action {
 }
 
 export type EmailProps = {
-  email: string; password: string;
+  email: string;
+  password: string;
 };
 
 export type NewCollection = {
@@ -35,29 +43,35 @@ export type NewCollection = {
 
 export type AsyncAction = (dispatch: Dispatch) => Promise<void>;
 
-export interface Question {
+export interface QuestionReq {
   question: string;
   answer: string;
+  newQuestion?: boolean;
 }
 
-type Questions = {
-  [id: string]: Question;
+type QuestionsReq = {
+  [id: string]: QuestionReq;
 };
 
 export type FormQuestion = {
-  question: string; answer: string;
+  question: string;
+  answer: string;
+  newQuestion: boolean;
 };
 
 export type DeleteFcn = (Action: React.EventHandler<any>) => any;
 
 export interface InjectedCollectionProps {
-  questions: {questions: Questions};
+  questions: { questions: QuestionsReq };
   renderQuestions: () => Array<JSX.Element>;
-  addQuestion: ({question, answer}: FormQuestion) => void;
-  removeQuestion: (id: string|number) => void;
-  setQuestions: (questions: Questions) => void;
+  addQuestion: ({ question, answer }: FormQuestion) => void;
+  removeQuestion: (id: string | number) => void;
+  setQuestions: (questions: QuestionsReq) => void;
 }
 
 export type QAPIResp = {
-  id: number; q: string; a: string; performance: number;
+  id: number;
+  q: string;
+  a: string;
+  performance: number;
 };

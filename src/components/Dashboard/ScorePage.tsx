@@ -1,28 +1,21 @@
-import React, { PureComponent, ComponentState } from "react";
+import React, { PureComponent, ComponentState, ReactNode } from "react";
 import axios from "axios";
 import { compose } from "redux";
 import { withRouter, RouteComponentProps } from "react-router";
-import PracticeCollection from "./PracticeCollection";
 import { setCurQuestion } from "../../actions";
 import { QAPIResp } from "../../@types";
 import Header from "../Header";
 import { connect } from "react-redux";
-
-//display submitted and correct answer
-//display given score
-//next question button that generates a random question
-//based on the relative scores of current questions
-//and changes the current question state
 
 interface Params {
   cid: string;
   qset_id: string;
 }
 
-type StateProps = {
+interface StateProps {
   question: Types.QuestionState;
   score: number;
-};
+}
 
 interface ActionProps {
   setCurQuestion: (cid: string, question: QAPIResp) => Types.Action;
@@ -31,15 +24,14 @@ interface ActionProps {
 class ScorePage extends PureComponent<
   StateProps & RouteComponentProps<Params> & ActionProps
 > {
-  state: ComponentState = {
+  public state: ComponentState = {
     answer: ""
   };
 
-  getNextQuestion = async () => {
+  private getNextQuestion = async (): Promise<void> => {
     const resp = await axios.get(
       `/api/score/next/${this.props.match.params.qset_id}`
     );
-    console.log(resp.data);
     const question = resp.data;
     this.props.setCurQuestion(question.qset_id, {
       id: question.id,
@@ -47,10 +39,10 @@ class ScorePage extends PureComponent<
       a: question.a,
       performance: question.performance
     });
-    this.props.history.push("/practice/" + this.props.match.params.qset_id);
+    this.props.history.push(`/practice/${this.props.match.params.qset_id}`);
   };
 
-  render() {
+  public render(): ReactNode {
     return (
       <div>
         <Header />
@@ -66,7 +58,7 @@ class ScorePage extends PureComponent<
   }
 }
 
-function mapStateToProps({ question }: Types.State) {
+function mapStateToProps({ question }: Types.State): object {
   return { question };
 }
 

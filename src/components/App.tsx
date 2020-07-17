@@ -1,66 +1,54 @@
-import './App.scss';
-import React, { Component } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
-import { connect } from 'react-redux';
-import Landing from './Landing';
-import Signin from './Authentication/Signin';
-import Dashboard from './Dashboard';
-import SignUp from './Authentication/Signup';
-import NewCollection from './Dashboard/NewCollection';
-import EditCollection from './Dashboard/EditCollection';
-import { fetchUser } from '../actions/index';
-import ReqSignedIn from './HOC/ReqSignedIn';
-import ReqSignedOut from './HOC/ReqSignedOut';
-import {
-  HOME_PATH,
-  SIGNIN_PATH,
-  DASHBOARD_PATH,
-  SIGNUP_PATH,
-  NEWCOL_PATH,
-  EDITCOL_PATH,
-  PRAC_PATH
-} from '../config';
-import PracticeCollection from './Dashboard/PracticeCollection';
-import ScorePage from './Dashboard/ScorePage';
+import "./App.scss";
+import React, { Component } from "react";
+import { BrowserRouter, Route } from "react-router-dom";
+import { connect } from "react-redux";
+import Landing from "./Landing";
+import Signin from "./Authentication/Signin";
+import Dashboard from "./Dashboard";
+import SignUp from "./Authentication/Signup";
+import NewCollection from "./Dashboard/NewCollection";
+import EditCollection from "./Dashboard/EditCollection";
+import { fetchUser } from "../actions/index";
+import ReqSignedIn from "./HOC/ReqSignedIn";
+import ReqSignedOut from "./HOC/ReqSignedOut";
+import PracticeCollection from "./Dashboard/PracticeCollection";
+import ScorePage from "./Dashboard/ScorePage";
 
-type DispatchProps = {
+interface DispatchProps {
   fetchUser: Function;
-};
+}
 
 class App extends Component<DispatchProps, {}> {
-  componentDidMount() {
+  public componentDidMount(): void {
     this.props.fetchUser();
   }
 
-  render() {
+  public render(): any {
     return (
       <BrowserRouter>
-        <Route exact path={HOME_PATH} component={ReqSignedOut(Landing)} />
-        <Route exact path={SIGNIN_PATH} component={ReqSignedOut(Signin)} />
-        <Route exact path={DASHBOARD_PATH} component={ReqSignedIn(Dashboard)} />
-        <Route exact path={SIGNUP_PATH} component={ReqSignedOut(SignUp)} />
+        <Route exact path="/" component={ReqSignedOut(Landing)} />
+        <Route exact path="/signin" component={ReqSignedOut(Signin)} />
+        <Route exact path="/dashboard" component={ReqSignedIn(Dashboard)} />
+        <Route exact path="/signup" component={ReqSignedOut(SignUp)} />
+        <Route exact path="/new" component={ReqSignedIn(NewCollection)} />
         <Route
           exact
-          path={NEWCOL_PATH}
-          component={ReqSignedIn(NewCollection)}
-        />
-        <Route
-          exact
-          path={EDITCOL_PATH + ':qid'}
+          path={"/collection/:qset_id"}
           component={ReqSignedIn(EditCollection)}
         />
         <Route
           exact
-          path={PRAC_PATH + ':cid'}
+          path={"/practice/:cid"}
           component={ReqSignedIn(PracticeCollection)}
         />
-        <Route exact path='/score/:qset_id' component={ReqSignedIn(ScorePage)} />
+        <Route
+          exact
+          path="/score/:qset_id"
+          component={ReqSignedIn(ScorePage)}
+        />
       </BrowserRouter>
     );
   }
 }
 
-export default connect(
-  null,
-  { fetchUser }
-)(App);
+export default connect(null, { fetchUser })(App);

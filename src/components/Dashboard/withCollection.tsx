@@ -1,26 +1,26 @@
-import React, { PureComponent } from 'react';
-import TextareaAutosize from 'react-autosize-textarea';
-import { ReactComponentLike } from 'prop-types';
-import shortid from 'shortid';
+import React, { PureComponent, ReactElement, ReactNode } from "react";
+import TextareaAutosize from "react-autosize-textarea";
+import { ReactComponentLike } from "prop-types";
+import shortid from "shortid";
 
 interface ComponentState {
-  questions: Types.Questions;
+  questions: Types.QuestionsReq;
 }
 
-function withCollection(WrappedComponent: ReactComponentLike) {
+function withCollection(WrappedComponent: ReactComponentLike): object {
   class CollectionWrapper extends PureComponent {
-    state: ComponentState = {
+    public state: ComponentState = {
       questions: {}
     };
 
-    setQuestions = (questions: Types.Questions) => {
+    private setQuestions = (questions: Types.QuestionsReq): void => {
       this.setState({ questions });
     };
 
-    questionChange = (event: React.FormEvent<any>) => {
-      const id = event.currentTarget.getAttribute('id');
+    private questionChange = (event: React.FormEvent<any>): void => {
+      const id = event.currentTarget.getAttribute("id");
       const elem = event.target as HTMLInputElement;
-      this.setState((prevState: ComponentState) => {
+      this.setState((prevState: ComponentState): ComponentState => {
         return {
           questions: {
             ...prevState.questions,
@@ -33,10 +33,10 @@ function withCollection(WrappedComponent: ReactComponentLike) {
       });
     };
 
-    answerChange = (event: React.FormEvent<any>) => {
-      const id = event.currentTarget.getAttribute('id');
+    private answerChange = (event: React.FormEvent<any>): void => {
+      const id = event.currentTarget.getAttribute("id");
       const elem = event.target as HTMLInputElement;
-      this.setState((prevState: ComponentState) => {
+      this.setState((prevState: ComponentState): ComponentState => {
         return {
           questions: {
             ...prevState.questions,
@@ -49,31 +49,33 @@ function withCollection(WrappedComponent: ReactComponentLike) {
       });
     };
 
-    addQuestion = ({ question, answer }: Types.FormQuestion) => {
-      const id = 'NEW-' + shortid.generate();
-      this.setState((prevState: ComponentState) => {
+    private addQuestion = ({ question, answer }: Types.FormQuestion): void => {
+      const id = shortid.generate();
+      this.setState((prevState: ComponentState): ComponentState => {
         return {
           questions: {
             ...prevState.questions,
-            [id]: { question, answer }
+            [id]: { question, answer, newQuestion: true }
           }
         };
       });
     };
 
-    removeQuestion = (event: React.FormEvent<any>) => {
-      const id = event.currentTarget.getAttribute('id');
-      const { [id]: q, ...qState } = this.state.questions;
-      this.setState(() => {
+    private removeQuestion = (event: React.FormEvent<any>): void => {
+      const id = event.currentTarget.getAttribute("id");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line no-unused-vars
+      const { [id]: _, ...qState } = this.state.questions;
+      this.setState((): ComponentState => {
         return {
           questions: qState
         };
       });
     };
 
-    renderQuestions = () => {
-      const qArr: Array<JSX.Element> = [];
-      Object.keys(this.state.questions).forEach(id => {
+    public renderQuestions = (): JSX.Element[] => {
+      const qArr: JSX.Element[] = [];
+      Object.keys(this.state.questions).forEach((id): void => {
         qArr.push(
           <div key={id}>
             <TextareaAutosize
@@ -101,7 +103,7 @@ function withCollection(WrappedComponent: ReactComponentLike) {
       return qArr;
     };
 
-    render() {
+    public render(): ReactNode {
       return (
         <WrappedComponent
           questions={this.state.questions}

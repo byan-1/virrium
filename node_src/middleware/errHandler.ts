@@ -1,7 +1,6 @@
-import { NextFunction, Request } from 'express-serve-static-core';
-import { Response } from 'express';
-
-const logger = require('../utils/logger');
+import { NextFunction, Request } from "express-serve-static-core";
+import { Response } from "express";
+import logger from "../services/logger";
 
 module.exports = (
   err: Error,
@@ -14,5 +13,5 @@ module.exports = (
   }
   let status = 500;
   logger.error(err);
-  res.status(status).redirect('/error');
+  res.status(status).redirect("/error");
 };

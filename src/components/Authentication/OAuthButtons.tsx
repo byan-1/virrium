@@ -1,8 +1,8 @@
 import './OAuthButtons.scss';
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { FBAUTH_PATH, GAUTH_PATH } from '../../config';
 
-function OAuthButtons() {
+function OAuthButtons(): ReactElement {
   return (
     <div>
       <a

@@ -1,24 +1,24 @@
-import './NewCollection.scss';
-import React, { PureComponent } from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import Header from '../Header';
-import axios from 'axios';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
-import QuestionForm from './Forms/QuestionForm';
-import { QUESAPI_PATH, DASHBOARD_PATH } from '../../config';
-import CollectionForm from './Forms/CollectionForm';
-import withCollection from './withCollection';
+import React, { PureComponent, ReactElement } from "react";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import Header from "../Header";
+import axios from "axios";
+import { RouteComponentProps, withRouter } from "react-router-dom";
+import QuestionForm from "./Forms/QuestionForm";
+import { QUESAPI_PATH, DASHBOARD_PATH } from "../../config";
+import CollectionForm from "./Forms/CollectionForm";
+import withCollection from "./withCollection";
 
-type StateProps = {
+interface StateProps {
   auth: Types.UserState;
-};
+}
 
 class NewCollection extends PureComponent<
   StateProps & Types.InjectedCollectionProps & RouteComponentProps
 > {
-  createCollection = async ({ title }: Types.NewCollection) => {
+  private createCollection = async ({ title }: Types.NewCollection): Promise<void> => {
     if (this.props.auth) {
+
       await axios.post(QUESAPI_PATH + this.props.auth.id, {
         title,
         questions: Object.values(this.props.questions)
@@ -27,7 +27,7 @@ class NewCollection extends PureComponent<
     }
   };
 
-  render() {
+  public render(): ReactElement {
     return (
       <div>
         <Header />

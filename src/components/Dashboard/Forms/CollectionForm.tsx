@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
-import { reduxForm, Field, InjectedFormProps } from 'redux-form';
+import React, { useEffect, ReactElement } from "react";
+import { reduxForm, Field, InjectedFormProps } from "redux-form";
+import { NewCollection } from "../../../@types";
 
 interface OwnProps {
   submitAction: (FormProps: Types.NewCollection) => void;
@@ -14,15 +15,13 @@ function CollectionForm({
   btnText,
   initialize,
   handleSubmit,
-  initVal = null
-}: OwnProps & InjectedFormProps) {
+  initVal = null,
+}: OwnProps & InjectedFormProps): ReactElement {
   if (initVal !== null)
-    useEffect(() => {
+    useEffect((): void => {
       initialize({ title: initVal });
     }, []);
-    useEffect(() => {
-
-    })
+  useEffect((): void => {});
   return (
     <form onSubmit={handleSubmit(submitAction)}>
       <button className="button is-dark is-medium formbtn">{btnText}</button>
@@ -46,6 +45,6 @@ function CollectionForm({
   );
 }
 
-export default reduxForm<{}, OwnProps>({ form: 'CollectionForm' })(
+export default reduxForm<{}, OwnProps>({ form: "CollectionForm" })(
   CollectionForm
 );

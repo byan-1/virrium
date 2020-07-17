@@ -1,68 +1,59 @@
-import {NextFunction, Request, Response} from 'express';
+import { NextFunction, Request, Response } from "express";
+import QuestionSet from "../../models/QuestionSet";
+import { QSET_DNE_ERRMSG, QUESTION_DNE_ERRMSG } from "./questionAPI";
 
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const axios = require('axios');
-const Question = require('../../models/Question');
-const QPerformance = require('../../models/QPerformance');
+const axios = require("axios");
+import Question from "../../models/Question";
 
-function getRandomInt(max: number) {
-  return Math.floor(Math.random() * Math.floor(max));
-}
+const EMPTYSET_ERRMSG = "Collection has no questions";
+const N_LATEST_SCORES = 10;
+const W2VPORT = 3001;
 
 router.get(
-    '/next/:qsetid',
-    async(req: Request, res: Response, next: NextFunction): Promise<void> => {
-      try {
-        const questions = await Question.query()
-                              .where({qset_id: req.params.qsetid})
-                              .select('*')
-                              .orderBy('id');
-        let accum = 0;
-        questions.map((question: any) => {
-          let weight = question.performance ?
-              Math.max(100 - question.performance, 10) :
-              100;
-          accum += weight;
-          question.accumulate = accum;
-        })
-        let rand = getRandomInt(accum);
-        let index = 0;
-        let lowerbound = -1;
-        var result;
-        for (const question of questions) {
-          let upperbound = question.accumulate
-          if (rand > lowerbound && rand <= upperbound) {
-            result = question;
-            break;
-          }
-          lowerbound = upperbound;
-        }
-        res.send(result);
-      } catch (err) {
-        next(err);
+  "/next/:qsetid",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const qset = await QuestionSet.findById(req.params.qsetid);
+      if (!qset) {
+        return res.status(422).send({ error: QSET_DNE_ERRMSG });
       }
-    });
+      const questions = await qset.getAllQuestions();
+      if (!questions) {
+        return res.status(422).send({ error: EMPTYSET_ERRMSG });
+      }
+      const qid = await Question.getRandWeightedId(questions);
+      res.send({ qid });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
-router.post(
-    '/',
-    async(req: Request, res: Response, next: NextFunction): Promise<void> => {
-      const actual = await Question.query().findOne({id: req.body.qid});
-      const resp = await axios.post(
-          'http://localhost:3001/',
-          {submitted: req.body.ans, actual: actual.a});
-      const similarity = Math.round(resp.data * 100);
-      await QPerformance.query().insert(
-          {q_id: req.body.qid, score: similarity});
-      const previous = await QPerformance.getLatest(10);
-      const average =
-          previous.reduce(
-              (sum: number, {score}: {score: number}) => sum + score, 0) /
-          previous.length;
-      await Question.query().findById(req.body.qid).patch({
-        performance: Math.round(average)
-      });
-      res.send({similarity});
+router.post("/", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const question = await Question.findById(req.body.qid);
+    if (!question) {
+      return res.status(422).send({ error: QUESTION_DNE_ERRMSG });
+    }
+    const resp = await axios.post(`http://localhost:${W2VPORT}/`, {
+      submitted: req.body.ans,
+      actual: question.a
     });
+    const similarity = await question.insertPerformance(resp.data);
+    const previous = await question.getLatestScores(N_LATEST_SCORES);
+    const average =
+      previous.reduce(
+        (sum: number, { score }: { score: number }) => sum + score,
+        0
+      ) / previous.length;
+    await question.updateScore(average);
+    res.send({ similarity });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+});
 
 module.exports = router;

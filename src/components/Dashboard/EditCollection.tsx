@@ -1,58 +1,56 @@
-import './NewCollection.scss';
-import React, { PureComponent } from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import Header from '../Header';
-import axios from 'axios';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
-import QuestionForm from './Forms/QuestionForm';
-import { QUESAPI_PATH, DASHBOARD_PATH } from '../../config';
-import CollectionForm from './Forms/CollectionForm';
-import withCollection from './withCollection';
+import React, { PureComponent, ReactNode } from "react";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import Header from "../Header";
+import axios from "axios";
+import { RouteComponentProps, withRouter } from "react-router-dom";
+import QuestionForm from "./Forms/QuestionForm";
+import CollectionForm from "./Forms/CollectionForm";
+import withCollection from "./withCollection";
+import { SingleQuestion } from "../../common-utils/lib/QSetHelpers";
 
 interface Params {
-  qid: string;
+  qset_id: string;
 }
 
-type StateProps = {
+interface StateProps {
   auth: Types.UserState;
-};
+}
 
 interface ComponentState {
   title: string | null;
-  id: number | null;
 }
 
 class EditCollection extends PureComponent<
   StateProps & Types.InjectedCollectionProps & RouteComponentProps<Params>
 > {
-  state: ComponentState = {
+  public state: ComponentState = {
     title: null,
-    id: null
   };
 
-  async componentDidMount() {
+  public async componentDidMount(): Promise<void> {
     const resp = await axios.get(
-      `${QUESAPI_PATH}qset/${this.props.match.params.qid}`
+      `/api/question/qset/${this.props.match.params.qset_id}`
     );
-    this.setState({ title: resp.data.title });
-    this.setState({ id: resp.data.id });
-    const questions: Types.Questions = {};
-    resp.data.questions.map((q: Types.QAPIResp) => {
-      questions[q.id] = { question: q.q, answer: q.a };
+    this.setState({ title: resp.data.qsetTitle });
+    const questions: Types.QuestionsReq = {};
+    resp.data.questions.map((qIn: SingleQuestion): void => {
+      questions[qIn.id] = { question: qIn.question, answer: qIn.answer };
     });
     this.props.setQuestions(questions);
   }
 
-  createCollection = async ({ title }: Types.NewCollection) => {
-    await axios.patch(QUESAPI_PATH + 'qset/' + this.state.id, {
+  private createCollection = async ({
+    title,
+  }: Types.NewCollection): Promise<void> => {
+    await axios.patch(`/api/question/qset/${this.props.match.params.qset_id}`, {
       title,
-      questions: this.props.questions
+      questions: this.props.questions,
     });
-    this.props.history.push(DASHBOARD_PATH);
+    this.props.history.push(`/dashboard`);
   };
 
-  render() {
+  public render(): ReactNode {
     return (
       <div>
         <Header />

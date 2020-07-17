@@ -1,164 +1,147 @@
-import {QuestionQuery, QuestionRequest} from '@types';
-import {NextFunction, Request, Response} from 'express';
-
-const express = require('express');
-const QuestionSet = require('../../models/QuestionSet');
-const Question = require('../../models/Question');
+import { QuestionQuery, QuestionRequest } from "@types";
+import { NextFunction, Request, Response } from "express";
+import Question from "../../models/Question";
+import User from "../../models/User";
+import express from "express";
+import QuestionSet from "../../models/QuestionSet";
+import { QuestionResp } from "../../../src/common-utils/lib/QSetHelpers";
+import { QuestionReq, QuestionsReq } from "../../../src/@types";
 
 const router = express.Router();
 
+export const USER_DNE_ERRMSG = "User does not exist";
+export const QSET_DNE_ERRMSG = "Colection does not exist";
+export const QSET_EXISTS_ERRMSG =
+  "Another collection with that name already exists";
+export const QUESTION_DNE_ERRMSG = "Question does not exist";
+
 // get all question collections from a user
-router.get(
-    '/:uid',
-    async(req: Request, res: Response, next: NextFunction): Promise<void> => {
-      try {
-        const qset = await QuestionSet.query()
-                         .where({uid: req.params.uid})
-                         .select('*')
-                         .orderBy('id');
-        res.send(qset);
-      } catch (err) {
-        next(err);
-      }
-    });
+router.get("/:uid", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user: User | undefined = await User.findById(req.params.uid);
+    if (!user) {
+      return res.status(422).send({ error: USER_DNE_ERRMSG });
+    }
+    res.send(QuestionSet.toResp(await user.getAllQsets()));
+  } catch (err) {
+    next(err);
+  }
+});
 
 // create a question collection for the user
 router.post(
-    '/:uid',
-    async(req: Request, res: Response, next: NextFunction): Promise<void> => {
-      const uid = req.params.uid;
-      const name = req.body.title;
-      const questions = req.body.questions;
-      if (!name || name.length > 255) {
-        res.status(422).send({error: 'Please enter a title'});
-        return;
+  "/:uid",
+  async (req: Request, res: Response, next: NextFunction) => {
+    const qsetTitle: string = req.body.title;
+    const questions: Array<QuestionRequest> = req.body.questions;
+    try {
+      const user: User | undefined = await User.findById(req.params.uid);
+      if (!user) {
+        return res.status(422).send({ error: USER_DNE_ERRMSG });
       }
-      try {
-        const existingQSet = await QuestionSet.query().findOne({name});
-        if (existingQSet) {
-          res.status(422).send(
-              {error: 'Another collection with that name already exists'});
-          return;
-        }
-
-        const qset =
-            await QuestionSet.query().insert({name, uid}).returning('*');
-
-        await Promise.all(questions.map(
-            async({question, answer}: QuestionRequest): Promise<void> => {
-              await Question.query().insert(
-                  {qset_id: qset.id, q: question, a: answer});
-            }));
-
-        res.send(qset);
-      } catch (err) {
-        next(err);
+      if (await QuestionSet.findByName(qsetTitle)) {
+        return res.status(422).send({ error: QSET_EXISTS_ERRMSG });
       }
-    });
+      res.send(QuestionSet.toResp(await user.insertQset(qsetTitle, questions)));
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 // delete a question collection for the user
 router.delete(
-    '/qset/:qset_id',
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const existingQSet =
-            await QuestionSet.query().findOne({id: req.params.qset_id});
-        if (!existingQSet) {
-          res.status(422).send({error: 'Collection does not exist'});
-          return;
-        }
-        const qset = await QuestionSet.query()
-                         .deleteById(req.params.qset_id)
-                         .returning('*');
-        res.send(qset);
-      } catch (err) {
-        console.log(err);
-        next(err);
+  "/qset/:qset_id",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const qsetId: number = req.params.qset_id;
+      if (!(await QuestionSet.findById(qsetId))) {
+        return res.status(422).send({ error: QSET_DNE_ERRMSG });
       }
-    });
+      res.send(QuestionSet.toResp(await QuestionSet.deleteById(qsetId)));
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 // get all questions in a collection from a user
 router.get(
-    '/qset/:qset_id',
-    async (req: Request, res: Response, next: NextFunction) => {
-      const qset_id = req.params.qset_id;
-      try {
-        const existingQSet =
-            await QuestionSet.query().findOne({id: req.params.qset_id});
-        if (!existingQSet) {
-          res.status(422).send({error: 'Collection does not exist'});
-          return;
-        }
-        const questions =
-            await Question.query().where('qset_id', '=', qset_id).orderBy('id');
-        const title = await QuestionSet.query()
-                          .select('id', 'name')
-                          .where('id', '=', qset_id);
-        res.send({id: title[0].id, title: title[0].name, questions});
-      } catch (err) {
-        next(err);
+  "/qset/:qset_id",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const qset: QuestionSet | undefined = await QuestionSet.findById(
+        req.params.qset_id
+      );
+      if (!qset) {
+        return res.status(422).send({ error: QSET_DNE_ERRMSG });
       }
-    });
 
-// get the next question from a collection
+      const resp: QuestionResp = {
+        qsetTitle: qset.name,
+        questions: Question.toResp(await qset.getAllQuestions())
+      };
+      res.send(resp);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+// get a question from a collection
 router.get(
-    '/qset/:qset_id/:q_id',
-    async (req: Request, res: Response, next: NextFunction) => {
-      const qid = req.params.q_id;
-      const qset_id = req.params.qset_id;
-      const questions: Array<QuestionQuery> =
-          await Question.query().where('qset_id', '=', qset_id).orderBy('id');
-      if (qid == 0) {
-        console.log('TRIGGERED')
-        res.send(questions[0]);
-      }
-      console.log(qid);
-      console.log(questions)
-      const question = questions.find(q => q.id === qid);
-      console.log(question)
-      res.send(question);
-    });
+  "/qset/:qset_id/:q_id",
+  async (req: Request, res: Response, next: NextFunction) => {
+    const question: Question | undefined = await Question.findById(
+      req.params.q_id
+    );
+    if (!question) {
+      return res.status(422).send({ error: QUESTION_DNE_ERRMSG });
+    }
+    res.send(Question.toResp(question)[0]);
+  }
+);
 
 // create a question under a collection for a user
 router.post(
-    '/qset/:qset_id',
-    async (req: Request, res: Response, next: NextFunction) => {
-      const qsetid = req.body.qset_id;
-      const question = req.body.question;
-      const answer = req.body.answer;
-      try {
-        const result = await Question.query()
-                           .insert({qsetid, question, answer})
-                           .returning('*');
-        res.send(result);
-      } catch (err) {
-        next(err);
+  "/qset/:qset_id",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const qset: QuestionSet | undefined = await QuestionSet.findById(
+        req.body.qset_id
+      );
+      if (!qset) {
+        res.status(422).send({ error: QSET_DNE_ERRMSG });
       }
-    });
+      const question: Question = await qset!.insertQuestion(
+        req.body.question,
+        req.body.answer
+      );
+      res.send(Question.toResp(question));
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 // edit a collection
 router.patch(
-    '/qset/:qset_id',
-    async (req: Request, res: Response, next: NextFunction) => {
-      const questions: Array<QuestionQuery> = [];
-      Object.entries(req.body.questions).forEach(([id,
-                                                   qData]: [string, any]) => {
-        const question: QuestionQuery = {};
-        if (id[0] !== 'N') {
-          question.id = id;
-        }
-        question.q = qData.question;
-        question.a = qData.answer;
-        question.qset_id = req.params.qset_id;
-        questions.push(question);
-      });
-      const qsetQuery = {
-        id: req.params.qset_id,
-        name: req.body.title,
-        question: questions
-      };
-      const dbResp = await QuestionSet.query().upsertGraph(qsetQuery);
-      res.send(dbResp);
-    });
+  "/qset/:qset_id",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const qset: QuestionSet | undefined = await QuestionSet.findById(
+        req.params.qset_id
+      );
+      if (!qset) {
+        res.status(422).send({ error: QSET_DNE_ERRMSG });
+      }
+      res.send(
+        QuestionSet.toResp(await qset!.upsertQuestions(req.body.questions))
+      );
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 module.exports = router;

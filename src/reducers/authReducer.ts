@@ -1,9 +1,9 @@
-import { FETCH_USER, SET_USER, SIGN_OUT } from '../config';
+import { FETCH_USER, SET_USER, SIGN_OUT } from "../config";
 
-export default function(
+export default function (
   state: Types.State | null = null,
   action: Types.Action
-) {
+): object | boolean | null {
   switch (action.type) {
     case FETCH_USER:
       return action.payload || false;

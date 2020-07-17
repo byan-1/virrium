@@ -1,10 +1,9 @@
-import React, { PureComponent, ComponentState } from "react";
+import React, { PureComponent, ComponentState, ReactNode } from "react";
 import axios from "axios";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter, RouteComponentProps } from "react-router";
 import Header from "../Header";
-import { QUESAPI_PATH } from "../../config";
 import { setCurQuestion } from "../../actions";
 import { QAPIResp } from "../../@types";
 import TextareaAutosize from "react-autosize-textarea/lib";
@@ -13,9 +12,9 @@ interface Params {
   cid: string;
 }
 
-type StateProps = {
+interface StateProps {
   question: Types.QuestionState;
-};
+}
 
 interface ActionProps {
   setCurQuestion: (cid: string, question: QAPIResp) => Types.Action;
@@ -24,57 +23,60 @@ interface ActionProps {
 class PracticeCollection extends PureComponent<
   StateProps & RouteComponentProps<Params> & ActionProps
 > {
-  state: ComponentState = {
-    answer: ""
+  public state: ComponentState = {
+    currentAnswer: ""
   };
 
-  colId = this.props.match.params.cid;
-  async componentDidMount() {
-    const qid = this.props.question[this.colId]
-      ? this.props.question[this.colId].id
-      : 0;
-    const resp = await axios.get(`${QUESAPI_PATH}qset/${this.colId}/${qid}`);
+  private qsetId = this.props.match.params.cid;
+  public async componentDidMount(): Promise<void> {
+    let qid;
+    if (this.props.question[this.qsetId]) {
+      qid = this.props.question[this.qsetId];
+    } else {
+      const resp = await axios.get(`/api/score/next/${this.qsetId}`);
+      qid = resp.data.qid;
+    }
+    const resp = await axios.get(`/api/question/qset/${this.qsetId}/${qid}`);
     const question = resp.data;
-    console.log(question);
-    if (!this.props.question[this.colId]) {
-      this.props.setCurQuestion(this.colId, {
+    if (!this.props.question[this.qsetId]) {
+      this.props.setCurQuestion(this.qsetId, {
         id: question.id,
-        q: question.q,
-        a: question.a,
+        q: question.question,
+        a: question.answer,
         performance: question.performance
       });
     }
   }
 
-  renderQuestion() {
-    return this.props.question[this.colId] ? (
-      <h1>{this.props.question[this.colId].q}</h1>
+  private renderQuestion(): ReactNode {
+    return this.props.question[this.qsetId] ? (
+      <h1>{this.props.question[this.qsetId].q}</h1>
     ) : null;
   }
 
-  answerChange = (event: React.FormEvent<any>) => {
+  private answerChange = (event: React.FormEvent<any>): void => {
     const elem = event.target as HTMLInputElement;
-    this.setState(() => {
+    this.setState((): object => {
       return {
         answer: elem.value
       };
     });
   };
 
-  submitAction = async () => {
-    const qid = this.props.question[this.colId]
-      ? this.props.question[this.colId].id
+  private submitAction = async (): Promise<void> => {
+    const qid = this.props.question[this.qsetId]
+      ? this.props.question[this.qsetId].id
       : 0;
     const resp = await axios.post("/api/score/", {
       qid,
       ans: this.state.answer
     });
-    this.props.history.push("/score/" + this.colId, {
+    this.props.history.push("/score/" + this.qsetId, {
       score: resp.data.similarity
     });
   };
 
-  render() {
+  public render(): ReactNode {
     return (
       <div>
         <Header />
@@ -101,7 +103,7 @@ class PracticeCollection extends PureComponent<
   }
 }
 
-function mapStateToProps({ question }: Types.State) {
+function mapStateToProps({ question }: Types.State): object {
   return { question };
 }
 
