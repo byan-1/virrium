@@ -13,6 +13,7 @@ import ReqSignedIn from "./HOC/ReqSignedIn";
 import ReqSignedOut from "./HOC/ReqSignedOut";
 import PracticeCollection from "./Dashboard/PracticeCollection";
 import ScorePage from "./Dashboard/ScorePage";
+import StatsPage from "./Dashboard/StatsPage";
 
 interface DispatchProps {
   fetchUser: Function;
@@ -31,6 +32,11 @@ class App extends Component<DispatchProps, {}> {
         <Route exact path="/dashboard" component={ReqSignedIn(Dashboard)} />
         <Route exact path="/signup" component={ReqSignedOut(SignUp)} />
         <Route exact path="/new" component={ReqSignedIn(NewCollection)} />
+        <Route
+          exact
+          path="/stats/:qset_id"
+          component={ReqSignedIn(StatsPage)}
+        />
         <Route
           exact
           path={"/collection/:qset_id"}

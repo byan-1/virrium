@@ -1,54 +1,20 @@
-.question-area {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
-  align-items: center;
+.question {
+  resize: none;
+  max-height: 45px;
+  margin-bottom: 5px;
 }
 
-.action-buttons {
-  margin-left: auto;
+.answer {
+  resize: none;
+  max-height: 20vh;
 }
 
-.action-buttons .button {
-  margin: 5px;
+.is-danger {
+  margin-bottom: 20px;
 }
-
-.set-title {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.container {
-  margin-top: 50px;
-  height: 100%;
-  position: relative;
-}
-
-.title {
-  text-align: center;
-}
-
-@keyframes spinner {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.spinner:before {
-  content: "";
-  box-sizing: border-box;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 60px;
-  height: 60px;
-  margin-top: -10px;
-  margin-left: -10px;
-  border-radius: 50%;
-  border: 5px solid #ccc;
-  border-top-color: #000;
-  animation: spinner 0.6s linear infinite;
+.panel-block {
+  resize: none;
+  height: 40vh;
 }
 
 .pagination {
@@ -99,19 +65,6 @@
   visibility: hidden;
 }
 
-.modal-popup {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-.is-bold {
-  font-weight: bold;
-}
-
-.is-large {
-  margin-left: 5px;
-  margin-right: 5px;
+.questions {
+  margin-top: 0;
 }

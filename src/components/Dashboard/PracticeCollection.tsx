@@ -6,7 +6,7 @@ import { withRouter, RouteComponentProps } from "react-router";
 import Header from "../Header";
 import { setCurQuestion } from "../../actions";
 import { QAPIResp } from "../../@types";
-import TextareaAutosize from "react-autosize-textarea/lib";
+import "./PracticeCollection.scss";
 
 interface Params {
   cid: string;
@@ -24,14 +24,14 @@ class PracticeCollection extends PureComponent<
   StateProps & RouteComponentProps<Params> & ActionProps
 > {
   public state: ComponentState = {
-    currentAnswer: ""
+    currentAnswer: "",
   };
 
   private qsetId = this.props.match.params.cid;
   public async componentDidMount(): Promise<void> {
     let qid;
     if (this.props.question[this.qsetId]) {
-      qid = this.props.question[this.qsetId];
+      qid = this.props.question[this.qsetId].id;
     } else {
       const resp = await axios.get(`/api/score/next/${this.qsetId}`);
       qid = resp.data.qid;
@@ -43,14 +43,17 @@ class PracticeCollection extends PureComponent<
         id: question.id,
         q: question.question,
         a: question.answer,
-        performance: question.performance
+        performance: question.performance,
       });
     }
+    this.setState({ currentAnswer: question.answer });
   }
 
   private renderQuestion(): ReactNode {
     return this.props.question[this.qsetId] ? (
-      <h1>{this.props.question[this.qsetId].q}</h1>
+      <h1 className="subtitle question">
+        {this.props.question[this.qsetId].q}
+      </h1>
     ) : null;
   }
 
@@ -58,21 +61,24 @@ class PracticeCollection extends PureComponent<
     const elem = event.target as HTMLInputElement;
     this.setState((): object => {
       return {
-        answer: elem.value
+        answer: elem.value,
       };
     });
   };
 
   private submitAction = async (): Promise<void> => {
+    this.componentDidMount();
     const qid = this.props.question[this.qsetId]
       ? this.props.question[this.qsetId].id
       : 0;
     const resp = await axios.post("/api/score/", {
       qid,
-      ans: this.state.answer
+      ans: this.state.answer,
     });
     this.props.history.push("/score/" + this.qsetId, {
-      score: resp.data.similarity
+      score: resp.data.similarity,
+      submitted: this.state.answer,
+      actual: this.state.currentAnswer,
     });
   };
 
@@ -80,24 +86,20 @@ class PracticeCollection extends PureComponent<
     return (
       <div>
         <Header />
-        {this.renderQuestion()}
-        <TextareaAutosize
-          className="input panel-block"
-          value={this.state.answer}
-          onChange={this.answerChange}
-        />
-        <button
-          //onClick={}
-          className="button is-dark is-medium"
-        >
-          Show Answer
-        </button>
-        <button
-          onClick={this.submitAction}
-          className="button is-dark is-medium"
-        >
-          Submit
-        </button>
+        <div className="container">
+          {this.renderQuestion()}
+          <textarea
+            className="input panel-block"
+            value={this.state.answer}
+            onChange={this.answerChange}
+          />
+          <button
+            onClick={this.submitAction}
+            className="button is-dark is-medium is-outlined sub-button"
+          >
+            Submit
+          </button>
+        </div>
       </div>
     );
   }
@@ -108,9 +110,6 @@ function mapStateToProps({ question }: Types.State): object {
 }
 
 export default compose(
-  connect(
-    mapStateToProps,
-    { setCurQuestion }
-  ),
+  connect(mapStateToProps, { setCurQuestion }),
   withRouter
 )(PracticeCollection);

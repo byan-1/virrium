@@ -1,21 +1,21 @@
-import './EmailFields.scss';
-import React, { Component, ReactNode } from 'react';
-import { reduxForm, Field, InjectedFormProps } from 'redux-form';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
-import axios from 'axios';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { setUser } from '../../actions';
+import "./EmailFields.scss";
+import React, { Component, ReactNode } from "react";
+import { reduxForm, Field, InjectedFormProps } from "redux-form";
+import { withRouter, RouteComponentProps } from "react-router-dom";
+import axios from "axios";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { setUser } from "../../actions";
 import {
   EAUTH_PATH,
   SIGNUP_PATH,
   DASHBOARD_PATH,
   TIMEOUT_MSG,
-  EMAIL_FORM
-} from '../../config';
+  EMAIL_FORM,
+} from "../../config";
 
 interface OwnProps {
-  page: 'signin' | 'signup';
+  page: "signin" | "signup";
 }
 
 interface ActionProps {
@@ -24,13 +24,13 @@ interface ActionProps {
 
 const pageOptions = {
   signin: {
-    btnText: 'Sign In',
-    requestLink: EAUTH_PATH
+    btnText: "Sign In",
+    requestLink: EAUTH_PATH,
   },
   signup: {
-    btnText: 'Sign Up',
-    requestLink: SIGNUP_PATH
-  }
+    btnText: "Sign Up",
+    requestLink: SIGNUP_PATH,
+  },
 };
 
 class EmailFields extends Component<
@@ -38,16 +38,19 @@ class EmailFields extends Component<
   {}
 > {
   public state = {
-    errMessage: '',
-    loading: false
+    errMessage: "",
+    loading: false,
   };
 
-  public authenticate = async ({ email, password }: Types.EmailProps): Promise<void> => {
+  public authenticate = async ({
+    email,
+    password,
+  }: Types.EmailProps): Promise<void> => {
     try {
       this.setState({ loading: true });
       const resp = await axios.post(pageOptions[this.props.page].requestLink, {
         email,
-        password
+        password,
       });
       this.props.setUser(resp.data);
       this.props.history.push(DASHBOARD_PATH);
@@ -55,7 +58,7 @@ class EmailFields extends Component<
       if (!err.response || err.response.status === 504) {
         this.setState({
           errMessage: TIMEOUT_MSG,
-          loading: false
+          loading: false,
         });
       } else {
         this.setState({ errMessage: err.response.data.error, loading: false });
@@ -92,12 +95,12 @@ class EmailFields extends Component<
         </fieldset>
         <div className="has-text-danger">{this.state.errMessage}</div>
         <div className="control">
-          {' '}
+          {" "}
           <button
             className={
               this.state.loading
-                ? 'button is-dark is-medium formbtn is-loading'
-                : 'button is-dark is-medium formbtn'
+                ? "button is-dark is-medium is-outlined formbtn is-loading"
+                : "button is-dark is-medium is-outlined formbtn"
             }
           >
             {pageOptions[this.props.page].btnText}
@@ -110,9 +113,6 @@ class EmailFields extends Component<
 
 export default compose(
   reduxForm<{}, OwnProps>({ form: EMAIL_FORM }),
-  connect<{}, ActionProps, OwnProps>(
-    null,
-    { setUser }
-  ),
+  connect<{}, ActionProps, OwnProps>(null, { setUser }),
   withRouter
 )(EmailFields);

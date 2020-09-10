@@ -1,0 +1,28 @@
+.layout {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.questions {
+  margin-right: auto;
+  background-color: rgb(235, 235, 235);
+  margin: 0 !important;
+}
+
+.sidebar {
+  border-right: solid;
+  background-color: rgb(39, 39, 39);
+  height: 100vh;
+}
+
+.page {
+  background-color: rgb(235, 235, 235);
+  margin: 0 !important;
+}
+
+html {
+  background-color: rgb(235, 235, 235);
+}

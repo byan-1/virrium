@@ -3,7 +3,7 @@ import {
   MIN_PERFORMANCE,
   MAX_PERFORMANCE,
   MIN_QA_LENGTH,
-  MAX_QA_LENGTH
+  MAX_QA_LENGTH,
 } from "../config/dbConstants";
 import { Questions } from "../../src/common-utils/lib/QSetHelpers";
 import QPerformance from "./QPerformance";
@@ -39,17 +39,17 @@ export default class Question extends Model {
         modelClass: QuestionSet,
         join: {
           from: "questions.qset_id",
-          to: "qsets.id"
-        }
+          to: "qsets.id",
+        },
       },
       qperformance: {
         relation: Model.HasManyRelation,
         modelClass: QPerformance,
         join: {
           from: "questions.id",
-          to: "qperformance.q_id"
-        }
-      }
+          to: "qperformance.q_id",
+        },
+      },
     };
   }
 
@@ -62,23 +62,25 @@ export default class Question extends Model {
         q: {
           type: "string",
           minLength: MIN_QA_LENGTH,
-          maxLength: MAX_QA_LENGTH
+          maxLength: MAX_QA_LENGTH,
         },
         a: {
           type: "string",
           minLength: MIN_QA_LENGTH,
-          maxLength: MAX_QA_LENGTH
+          maxLength: MAX_QA_LENGTH,
         },
         performance: {
           type: "integer",
           minimum: MIN_PERFORMANCE,
-          maximum: MAX_PERFORMANCE
-        }
-      }
+          maximum: MAX_PERFORMANCE,
+        },
+      },
     };
   }
 
-  static toResp(question: Array<Question> | Question | undefined): Questions {
+  public static toResp(
+    question: Array<Question> | Question | undefined
+  ): Questions {
     if (question instanceof Question) {
       question = [question];
     }
@@ -89,11 +91,35 @@ export default class Question extends Model {
             qset_id: curSet.qset_id,
             question: curSet.q,
             answer: curSet.a,
-            performance: curSet.performance
+            performance: curSet.performance,
           });
           return accumulator;
         }, [])
       : [];
+  }
+
+  public async getPerformance(): Promise<any> {
+    return await this.$relatedQuery<QPerformance>(
+      QPERFORMANCE_RELATION
+    ).orderBy("date_time");
+  }
+
+  public static async toPerformanceResp(
+    question: Array<Question>
+  ): Promise<any> {
+    let accumulator = [];
+
+    for (const curSet of question) {
+      const scores = await curSet.getPerformance();
+      accumulator.push({
+        id: curSet.id,
+        qset_id: curSet.qset_id,
+        question: curSet.q,
+        answer: curSet.a,
+        attempts: scores,
+      });
+    }
+    return accumulator;
   }
 
   static findById(id: number): Promise<Question | undefined> {
@@ -110,7 +136,7 @@ export default class Question extends Model {
         accum += weight;
         return {
           id: question.id,
-          accumulate: accum
+          accumulate: accum,
         };
       }
     );
@@ -132,7 +158,7 @@ export default class Question extends Model {
   async insertPerformance(score: number): Promise<number> {
     const similarity = Math.round(score * 100);
     await this.$relatedQuery<QPerformance>(QPERFORMANCE_RELATION).insert({
-      score: similarity
+      score: similarity,
     });
     return similarity;
   }

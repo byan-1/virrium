@@ -8,6 +8,7 @@ import {
   SET_USER,
   SIGN_OUT,
   SET_SEARCHTEXT,
+  EMPTY_SEARCHTEXT,
 } from "../config";
 
 export const fetchUser = (): Types.AsyncAction => async (
@@ -36,6 +37,10 @@ export const setCurQuestion = (
   return { type: SET_QUESTION, payload: { [cid]: question } };
 };
 
-export const setSearchText = (curText: string): Types.Action => {
+export const setSearchText = (curText: string | null): Types.Action => {
   return { type: SET_SEARCHTEXT, payload: curText };
+};
+
+export const emptySearchText = (): Types.Action => {
+  return { type: EMPTY_SEARCHTEXT, payload: "" };
 };

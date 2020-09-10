@@ -1,10 +1,11 @@
-@import '~bulma/sass/utilities/initial-variables.sass';
-@import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
+@import "~bulma/sass/utilities/initial-variables.sass";
+@import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
 
 body i {
-  font-family: 'FontAwesome' !important;
+  font-family: "FontAwesome" !important;
 }
 
-$gap: 300px;
+$menu-list-line-height: 3;
+$menu-list-link-padding: 0.5em 3em;
 
-@import '~bulma/bulma.sass';
+@import "~bulma/bulma.sass";

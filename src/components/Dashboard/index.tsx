@@ -1,14 +1,17 @@
-import React, { Component, ReactNode } from 'react';
-import { connect } from 'react-redux';
-import Header from '../Header';
-import Collection from './Collection';
+import "./index.scss";
+import React, { Component, ReactNode } from "react";
+import { connect } from "react-redux";
+import Header from "../Header";
+import Collection from "./Collection";
 
 class Dashboard extends Component {
   public render(): ReactNode {
     return (
-      <div>
+      <div className="page">
         <Header />
-        <Collection />
+        <div className="questions">
+          <Collection />
+        </div>
       </div>
     );
   }

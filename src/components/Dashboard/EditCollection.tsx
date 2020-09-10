@@ -1,3 +1,4 @@
+import "./EditCollection.scss";
 import React, { PureComponent, ReactNode } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -19,6 +20,8 @@ interface StateProps {
 
 interface ComponentState {
   title: string | null;
+  nameError: boolean;
+  errMsg: string;
 }
 
 class EditCollection extends PureComponent<
@@ -26,6 +29,8 @@ class EditCollection extends PureComponent<
 > {
   public state: ComponentState = {
     title: null,
+    nameError: false,
+    errMsg: "",
   };
 
   public async componentDidMount(): Promise<void> {
@@ -40,30 +45,58 @@ class EditCollection extends PureComponent<
     this.props.setQuestions(questions);
   }
 
-  private createCollection = async ({
+  private editCollection = async ({
     title,
   }: Types.NewCollection): Promise<void> => {
-    await axios.patch(`/api/question/qset/${this.props.match.params.qset_id}`, {
-      title,
-      questions: this.props.questions,
-    });
-    this.props.history.push(`/dashboard`);
+    if (this.props.auth) {
+      if (!title || title.length === 0) {
+        this.setState({ nameError: true });
+        return;
+      }
+      this.setState({ nameError: false });
+      try {
+        await axios.patch(
+          `/api/question/qset/${this.props.match.params.qset_id}`,
+          {
+            title,
+            questions: this.props.questions,
+          }
+        );
+        this.props.history.push(`/dashboard`);
+      } catch (err) {
+        this.setState({ errMsg: err.response.data });
+      }
+    }
   };
+
+  private renderErr(): ReactNode | null {
+    if (this.state.nameError) {
+      return (
+        <p className="has-text-danger">Collection must have a valid name.</p>
+      );
+    }
+    if (this.state.errMsg.length) {
+      return <p className="has-text-danger">{this.state.errMsg}</p>;
+    }
+    return null;
+  }
 
   public render(): ReactNode {
     return (
       <div>
         <Header />
         <div className="container">
-          <h1>Edit collection</h1>
+          <h1 className="title">Edit collection</h1>
           {this.state.title === null ? null : (
             <CollectionForm
-              btnText="Edit"
-              submitAction={this.createCollection}
-              renderJSX={this.props.renderQuestions()}
+              btnText="Submit"
+              submitAction={this.editCollection}
+              renderJSX={this.props.renderQuestions(this.props.currentPage)}
               initVal={this.state.title}
+              renderErr={this.renderErr()}
             />
           )}
+          {this.props.renderPaginate}
           <QuestionForm submitAction={this.props.addQuestion} />
         </div>
       </div>

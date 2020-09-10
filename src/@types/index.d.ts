@@ -1,4 +1,4 @@
-import { Dispatch } from "react";
+import { Dispatch, ReactNode } from "react";
 
 export as namespace Types;
 
@@ -63,7 +63,9 @@ export type DeleteFcn = (Action: React.EventHandler<any>) => any;
 
 export interface InjectedCollectionProps {
   questions: { questions: QuestionsReq };
-  renderQuestions: () => Array<JSX.Element>;
+  renderQuestions: any;
+  currentPage: number;
+  renderPaginate: () => ReactNode;
   addQuestion: ({ question, answer }: FormQuestion) => void;
   removeQuestion: (id: string | number) => void;
   setQuestions: (questions: QuestionsReq) => void;

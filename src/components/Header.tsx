@@ -2,9 +2,8 @@ import "./Header.scss";
 import React, { Component, ReactNode } from "react";
 import { connect } from "react-redux";
 import { Link, withRouter, RouteComponentProps } from "react-router-dom";
-import { signOut } from "../actions";
-import { HOME_PATH, SIGNIN_PATH, NEWCOL_PATH } from "../config";
-import { setSearchText } from "../actions";
+import { HOME_PATH, SIGNIN_PATH, NEWCOL_PATH, SIGNUP_PATH } from "../config";
+import { setSearchText, signOut } from "../actions";
 import { AuthState, SearchState } from "../@types";
 
 interface StateProps {
@@ -46,7 +45,10 @@ class Header extends Component<
             className="navbar-item"
             onClick={(): object => this.props.signOut(this.props.history)}
           >
-            Sign Out
+            <span className="icon is-small new-icon">
+              <i className="fa fa-power-off" />
+            </span>
+            <span className="signout-text">Sign Out</span>
           </a>
         );
     }
@@ -55,17 +57,39 @@ class Header extends Component<
   private renderHome = (): ReactNode => {
     return (
       <Link className="navbar-item" to={HOME_PATH}>
-        Return to Home
+        <span className="icon is-small new-icon">
+          <i className="fa fa-home" />
+        </span>
+        <span>Home</span>
       </Link>
     );
+  };
+
+  private renderAccount = (): ReactNode => {
+    if (
+      this.props.location.pathname.toLowerCase().startsWith(HOME_PATH) &&
+      this.props.location.pathname.toLowerCase().startsWith(SIGNIN_PATH) &&
+      this.props.location.pathname.toLowerCase().startsWith(SIGNUP_PATH)
+    ) {
+      return (
+        <Link className="navbar-item" to="/account">
+          <span className="icon is-small new-icon">
+            <i className="fa fa-user" />
+          </span>
+          <span className="account-text">Account</span>
+        </Link>
+      );
+    }
   };
 
   private renderCreate = (): ReactNode | void => {
     const pathname = this.props.location.pathname;
     if (
-      pathname.startsWith("/dashboard") ||
-      pathname.startsWith("/practice") ||
-      pathname.startsWith("/new")
+      pathname.toLowerCase().startsWith("/dashboard") ||
+      pathname.toLowerCase().startsWith("/practice") ||
+      pathname.toLowerCase().startsWith("/new") ||
+      pathname.toLowerCase().startsWith("/collection") ||
+      pathname.toLowerCase().startsWith("/stats")
     ) {
       return (
         <Link className="navbar-item" to={NEWCOL_PATH}>
@@ -79,7 +103,13 @@ class Header extends Component<
   };
 
   private renderSearch = (): ReactNode => {
-    if (this.props.location.pathname == "/dashboard") {
+    const loc = this.props.location.pathname.toLowerCase();
+    if (
+      loc.startsWith("/dashboard") ||
+      loc.startsWith("/new") ||
+      loc.startsWith("/collection") ||
+      loc.startsWith("/stats")
+    ) {
       return (
         <div className="navbar-item control is-expanded">
           <i className="fa fa-search search-icon" />
@@ -106,7 +136,7 @@ class Header extends Component<
 
   public render(): ReactNode {
     return (
-      <nav className="navbar is-spaced is-link">
+      <nav className="navbar is-spaced is-light">
         <div className="navbar-start">
           <Link className="navbar-item" to={HOME_PATH}>
             <b>Virrium</b>
@@ -117,6 +147,11 @@ class Header extends Component<
           {this.renderCreate()}
         </div>
         {this.renderSearch()}
+        <div className="navbar-end">
+          <div></div>
+          {this.renderAccount()}
+        </div>
+        <div className="navbar-end">{this.renderHome()}</div>
         <div className="navbar-end">
           {this.pageOptions[this.props.page].hNav()}
         </div>

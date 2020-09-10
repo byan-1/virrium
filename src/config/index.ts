@@ -5,6 +5,7 @@ export const SIGN_OUT = "SIGN_OUT";
 export const SET_QUESTION = "SET_QUESTION";
 export const FETCH_QUESTION = "FETCH_QUESTION";
 export const SET_SEARCHTEXT = "SET_SEARCHTEXT";
+export const EMPTY_SEARCHTEXT = "EMPTY_SEARCHTEXT";
 
 // URL paths
 export const HOME_PATH = "/";

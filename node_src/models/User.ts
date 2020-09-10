@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/explicit-member-accessibility */
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { Model, RelationMappings, JsonSchema } from "objection";
 import QuestionSet from "./QuestionSet";
 import { QSetResp, QSet } from "../../src/common-utils/lib/QSetHelpers";
@@ -22,8 +25,8 @@ export default class User extends Model {
     return {
       type: "object",
       properties: {
-        id: { type: "integer" }
-      }
+        id: { type: "integer" },
+      },
     };
   }
 
@@ -37,33 +40,33 @@ export default class User extends Model {
         modelClass: GAuth,
         join: {
           from: "users.id",
-          to: "gauth.uid"
-        }
+          to: "gauth.uid",
+        },
       },
       facebookauth: {
         relation: Model.HasOneRelation,
         modelClass: FBAuth,
         join: {
           from: "users.id",
-          to: "fbauth.uid"
-        }
+          to: "fbauth.uid",
+        },
       },
       eauth: {
         relation: Model.HasOneRelation,
         modelClass: EmailAuth,
         join: {
           from: "users.id",
-          to: "emailauth.uid"
-        }
+          to: "emailauth.uid",
+        },
       },
       questionset: {
         relation: Model.HasManyRelation,
         modelClass: QuestionSet,
         join: {
           from: "users.id",
-          to: "qsets.uid"
-        }
-      }
+          to: "qsets.uid",
+        },
+      },
     };
   }
 
@@ -76,9 +79,7 @@ export default class User extends Model {
   }
 
   static async insertUser(auth?: Auth) {
-    const user = await User.query()
-      .insert({})
-      .returning("*");
+    const user = await User.query().insert({}).returning("*");
     if (auth) {
       await user.$relatedQuery(auth.type);
     }
@@ -94,7 +95,6 @@ export default class User extends Model {
     )
       .insert({ name: title })
       .returning("*");
-    console.log(qset);
     await Promise.all(
       questions.map(
         async ({ question, answer }: QuestionRequest): Promise<void> => {

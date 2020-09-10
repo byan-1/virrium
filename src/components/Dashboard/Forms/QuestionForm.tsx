@@ -1,5 +1,6 @@
-import React, { ReactElement } from 'react';
-import { reduxForm, Field, InjectedFormProps } from 'redux-form';
+import "./QuestionForm.scss";
+import React, { ReactElement } from "react";
+import { reduxForm, Field, InjectedFormProps } from "redux-form";
 
 interface OwnProps {
   submitAction: (FormProps: Types.FormQuestion) => void;
@@ -29,11 +30,14 @@ const QuestionForm = (props: OwnProps & InjectedFormProps): ReactElement => {
         placeholder="Type answer here"
         autoComplete="off"
       />
-      <button type="submit" className="button is-dark is-medium formbtn">
+      <button
+        type="submit"
+        className="button is-dark is-medium formbtn is-outlined"
+      >
         Add Question
       </button>
     </form>
   );
 };
 
-export default reduxForm<{}, OwnProps>({ form: 'QuestionForm' })(QuestionForm);
+export default reduxForm<{}, OwnProps>({ form: "QuestionForm" })(QuestionForm);

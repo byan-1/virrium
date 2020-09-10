@@ -1,12 +1,16 @@
+/* eslint-disable @typescript-eslint/explicit-member-accessibility */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/array-type */
 import { Model, RelationMappings, JsonSchema } from "objection";
 import {
   MIN_QSETNAME_LENGTH,
-  MAX_QSETNAME_LENGTH
+  MAX_QSETNAME_LENGTH,
 } from "../config/dbConstants";
-import { QSetResp } from "../../src/common-utils/lib/QSetHelpers";
+import { QSetResp, QSet } from "../../src/common-utils/lib/QSetHelpers";
 import Question from "./Question";
 import { QuestionsReq, QuestionReq } from "../../src/@types";
 import { QuestionQuery } from "@types";
+import { maxHeaderSize } from "http";
 
 const QUESTION_RELATION = "question";
 
@@ -27,17 +31,17 @@ export default class QuestionSet extends Model {
         modelClass: User,
         join: {
           from: "qsets.uid",
-          to: "users.id"
-        }
+          to: "users.id",
+        },
       },
       question: {
         relation: Model.HasManyRelation,
         modelClass: Question,
         join: {
           from: "qsets.id",
-          to: "questions.qset_id"
-        }
-      }
+          to: "questions.qset_id",
+        },
+      },
     };
   }
 
@@ -50,15 +54,16 @@ export default class QuestionSet extends Model {
         name: {
           type: "string",
           minLength: MIN_QSETNAME_LENGTH,
-          maxLength: MAX_QSETNAME_LENGTH
-        }
-      }
+          maxLength: MAX_QSETNAME_LENGTH,
+        },
+      },
+      additionalProperties: true,
     };
   }
 
   static findById(id: number): Promise<QuestionSet | undefined> {
     return QuestionSet.query().findOne({
-      id
+      id,
     });
   }
 
@@ -71,7 +76,7 @@ export default class QuestionSet extends Model {
 
   static findByName(name: string): Promise<QuestionSet | undefined> {
     return QuestionSet.query().findOne({
-      name
+      name,
     });
   }
 
@@ -79,7 +84,7 @@ export default class QuestionSet extends Model {
     return this.$relatedQuery<Question>(QUESTION_RELATION)
       .insert({
         q: question,
-        a: answer
+        a: answer,
       })
       .returning("*");
   }
@@ -91,14 +96,18 @@ export default class QuestionSet extends Model {
       questionSets = [questionSets];
     }
     return questionSets
-      ? questionSets.reduce((accumulator: QSetResp, curSet: QuestionSet) => {
-          accumulator.push({
-            id: curSet.id,
-            uid: curSet.uid,
-            name: curSet.name
-          });
-          return accumulator;
-        }, [])
+      ? questionSets
+          .reduce((accumulator: QSetResp, curSet: QuestionSet) => {
+            accumulator.push({
+              id: curSet.id,
+              uid: curSet.uid,
+              name: curSet.name,
+            });
+            return accumulator;
+          }, [])
+          .sort((a: QSet, b: QSet): number => {
+            return a.id - b.id;
+          })
       : [];
   }
 
@@ -106,7 +115,10 @@ export default class QuestionSet extends Model {
     return this.$relatedQuery<Question>(QUESTION_RELATION).orderBy("id");
   }
 
-  upsertQuestions(questionsReq: QuestionsReq): Promise<QuestionSet> {
+  upsertQuestions(
+    questionsReq: QuestionsReq,
+    name: string
+  ): Promise<QuestionSet> {
     const questions: Array<QuestionQuery> = [];
     Object.entries(questionsReq).forEach(
       ([id, qData]: [string, QuestionReq]) => {
@@ -122,8 +134,8 @@ export default class QuestionSet extends Model {
     );
     const qsetQuery = {
       id: this.id,
-      name: this.name,
-      question: questions
+      name,
+      question: questions,
     };
     return QuestionSet.query().upsertGraph(qsetQuery);
   }

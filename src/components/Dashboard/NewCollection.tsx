@@ -1,4 +1,4 @@
-import React, { PureComponent, ReactElement } from "react";
+import React, { PureComponent, ReactElement, ReactNode } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import Header from "../Header";
@@ -11,33 +11,68 @@ import withCollection from "./withCollection";
 
 interface StateProps {
   auth: Types.UserState;
+  search: string;
+}
+
+interface ComponentState {
+  nameError: boolean;
+  errMsg: string;
 }
 
 class NewCollection extends PureComponent<
   StateProps & Types.InjectedCollectionProps & RouteComponentProps
 > {
-  private createCollection = async ({ title }: Types.NewCollection): Promise<void> => {
-    if (this.props.auth) {
+  public state: ComponentState = {
+    nameError: false,
+    errMsg: "",
+  };
 
-      await axios.post(QUESAPI_PATH + this.props.auth.id, {
-        title,
-        questions: Object.values(this.props.questions)
-      });
-      this.props.history.push(DASHBOARD_PATH);
+  private createCollection = async ({
+    title,
+  }: Types.NewCollection): Promise<void> => {
+    if (this.props.auth) {
+      if (!title || title.length === 0) {
+        this.setState({ nameError: true });
+        return;
+      }
+      this.setState({ nameError: false });
+      try {
+        await axios.post(QUESAPI_PATH + this.props.auth.id, {
+          title,
+          questions: Object.values(this.props.questions),
+        });
+        this.props.history.push(DASHBOARD_PATH);
+      } catch (err) {
+        this.setState({ errMsg: err.response.data });
+      }
     }
   };
+
+  private renderErr(): null | ReactNode {
+    if (this.state.nameError) {
+      return (
+        <p className="has-text-danger">Collection must have a valid name.</p>
+      );
+    }
+    if (this.state.errMsg.length) {
+      return <p className="has-text-danger">{this.state.errMsg}</p>;
+    }
+    return null;
+  }
 
   public render(): ReactElement {
     return (
       <div>
         <Header />
         <div className="container">
-          <h1>Create a new collection</h1>
+          <h1 className="title">Create a new collection</h1>
           <CollectionForm
             btnText="Create"
             submitAction={this.createCollection}
-            renderJSX={this.props.renderQuestions()}
+            renderJSX={this.props.renderQuestions(this.props.currentPage)}
+            renderErr={this.renderErr()}
           />
+          {this.props.renderPaginate}
           <QuestionForm submitAction={this.props.addQuestion} />
         </div>
       </div>
@@ -45,8 +80,11 @@ class NewCollection extends PureComponent<
   }
 }
 
-function mapStateToProps({ auth }: Types.State): Types.AuthState {
-  return { auth };
+function mapStateToProps({
+  auth,
+  search,
+}: Types.State): Types.AuthState & Types.SearchState {
+  return { auth, search };
 }
 
 export default compose(

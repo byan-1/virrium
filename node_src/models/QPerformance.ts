@@ -5,11 +5,11 @@ export default class QPerformance extends Model {
   score!: number;
   id!: number;
   q_id!: number;
-  static get tableName(): string {
+  public static get tableName(): string {
     return "qperformance";
   }
 
-  static get relationMappings(): RelationMappings {
+  public static get relationMappings(): RelationMappings {
     const Question = require("./Question");
     return {
       questions: {
@@ -22,5 +22,4 @@ export default class QPerformance extends Model {
       }
     };
   }
-
 }

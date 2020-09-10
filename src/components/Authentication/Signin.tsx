@@ -12,7 +12,6 @@ function Signin(): ReactElement {
       <Header page="auth" />
       <section className="section vcenter">
         <div className="container is-widescreen">
-          <h1 className="title">Virrium</h1>
           <h2 className="subtitle">
             Don&apos;t have an account?{" "}
             <Link to={SIGNUP_PATH}>Sign up here</Link>
