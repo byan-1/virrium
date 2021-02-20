@@ -2,7 +2,7 @@
 import { QuestionQuery, QuestionRequest } from "@types";
 import { NextFunction, Request, Response } from "express";
 import Question from "../../models/Question";
-import User from "../../models/User";
+const User = require("../../models/User");
 import express from "express";
 import QuestionSet from "../../models/QuestionSet";
 import { QuestionResp } from "../../../src/common-utils/lib/QSetHelpers";
@@ -22,7 +22,7 @@ export const EMPTY_Q_ERRMSG = "Questions and answers cannot be empty.";
 // get all question collections from a user
 router.get("/:uid", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user: User | undefined = await User.findById(req.params.uid);
+    const user: typeof User | undefined = await User.findById(req.params.uid);
     if (!user) {
       return res.status(422).send({ error: USER_DNE_ERRMSG });
     }
@@ -39,7 +39,7 @@ router.post(
     const qsetTitle: string = req.body.title;
     const questions: QuestionRequest[] = req.body.questions;
     try {
-      const user: User | undefined = await User.findById(req.params.uid);
+      const user: typeof User | undefined = await User.findById(req.params.uid);
       if (!user) {
         return res.status(422).send(USER_DNE_ERRMSG);
       }

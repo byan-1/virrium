@@ -4,7 +4,7 @@ const GoogleStrategy = require("passport-google-oauth20");
 const FacebookStrategy = require("passport-facebook").Strategy;
 const LocalStrategy = require("passport-local");
 const keys = require("../config/keys");
-import User from "../models/User";
+const User = require("../models/User");
 const GAuth = require("../models/GAuth");
 const FBAuth = require("../models/FBAuth");
 const EmailAuth = require("../models/EmailAuth");
@@ -26,7 +26,7 @@ passport.use(
       clientID: keys.googleClientID,
       clientSecret: keys.googleClientSecret,
       callbackURL: "/auth/google/callback",
-      proxy: true
+      proxy: true,
     },
     async (
       _accessToken: string | null,
@@ -35,15 +35,16 @@ passport.use(
       done: Done
     ): Promise<void> => {
       const existingUser = await GAuth.query().findOne({
-        googleid: profile.id
+        googleid: profile.id,
       });
       if (existingUser) {
         done(null, { id: existingUser.uid });
       } else {
         const user = await User.insertUser({
           id: profile.id,
-          type: "googleauth"
+          type: "googleauth",
         });
+        console.log(user);
         done(null, user);
       }
     }
@@ -56,7 +57,7 @@ passport.use(
       clientID: keys.fbClientID,
       clientSecret: keys.fbClientSecret,
       callbackURL: "/auth/facebook/callback",
-      proxy: true
+      proxy: true,
     },
     async (
       _accessToken: string,
@@ -66,14 +67,14 @@ passport.use(
     ): Promise<void> => {
       try {
         const existingUser = await FBAuth.query().findOne({
-          fbid: profile.id
+          fbid: profile.id,
         });
         if (existingUser) {
           done(null, { id: existingUser.uid });
         } else {
           const user = await User.insertUser({
             id: profile.id,
-            type: "facebookauth"
+            type: "facebookauth",
           });
           done(null, user);
         }

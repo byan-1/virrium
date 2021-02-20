@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const passport = require("passport");
 const cookieSession = require("cookie-session");
 import router from "./routes";
-const knex = require("./config/db");
+const knex = require("knex");
 const keys = require("./config/keys");
 const errHandler = require("./middleware/errHandler");
 require("./services/passport");
@@ -22,8 +22,17 @@ const app = express()
   .use(passport.session())
   .use(router)
   .use(errHandler);
-
-Model.knex(knex);
+Model.knex(
+  knex({
+    client: "postgresql",
+    connection: {
+      host: "127.0.0.1",
+      user: keys.user,
+      password: keys.password,
+      database: keys.dbName,
+    },
+  })
+);
 
 const PORT = process.env.PORT || DEFAULT_PORT;
 app.listen(PORT);

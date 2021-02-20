@@ -129,8 +129,12 @@ class Header extends Component<
     }
   };
 
+  private renderNone = (): ReactNode => {
+    return <div></div>;
+  };
+
   public pageOptions = {
-    auth: { hNav: this.renderHome },
+    auth: { hNav: this.renderNone },
     regular: { hNav: this.renderAuth },
   };
 

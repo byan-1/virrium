@@ -209,7 +209,7 @@ function withCollection(WrappedComponent: ReactComponentLike): object {
             <button
               id={id}
               onClick={this.removeQuestion}
-              className="button is-danger is-medium is-outlined"
+              className="button is-danger is-medium is-outlined float-right move-top"
             >
               Delete
             </button>

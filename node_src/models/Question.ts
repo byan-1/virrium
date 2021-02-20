@@ -1,4 +1,4 @@
-import { Model, RelationMappings, JsonSchema } from "objection";
+import { Model, RelationMappings, JSONSchema } from "objection";
 import {
   MIN_PERFORMANCE,
   MAX_PERFORMANCE,
@@ -53,7 +53,7 @@ export default class Question extends Model {
     };
   }
 
-  static get jsonSchema(): JsonSchema {
+  static get jsonSchema(): JSONSchema {
     return {
       type: "object",
       required: ["q", "a"],
@@ -180,6 +180,6 @@ export default class Question extends Model {
   }
 
   updateScore(score: number): void {
-    this.$query<Question>().patch({ performance: Math.round(score) });
+    this.$query().patch({ performance: Math.round(score) });
   }
 }

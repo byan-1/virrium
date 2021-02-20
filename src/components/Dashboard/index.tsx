@@ -5,6 +5,9 @@ import Header from "../Header";
 import Collection from "./Collection";
 
 class Dashboard extends Component {
+  public componentDidMount(): void {
+    document.title = "Virrium";
+  }
   public render(): ReactNode {
     return (
       <div className="page">

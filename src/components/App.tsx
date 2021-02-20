@@ -22,6 +22,7 @@ interface DispatchProps {
 class App extends Component<DispatchProps, {}> {
   public componentDidMount(): void {
     this.props.fetchUser();
+    document.title = "Virrium";
   }
 
   public render(): any {

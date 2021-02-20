@@ -1,4 +1,3 @@
-import "./EditCollection.scss";
 import React, { PureComponent, ReactNode } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -86,7 +85,7 @@ class EditCollection extends PureComponent<
       <div>
         <Header />
         <div className="container">
-          <h1 className="title">Edit collection</h1>
+          <h1 className="title move-top">Edit collection</h1>
           {this.state.title === null ? null : (
             <CollectionForm
               btnText="Submit"

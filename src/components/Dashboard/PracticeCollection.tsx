@@ -95,7 +95,7 @@ class PracticeCollection extends PureComponent<
           />
           <button
             onClick={this.submitAction}
-            className="button is-dark is-medium is-outlined sub-button"
+            className="button action is-dark is-medium is-outlined sub-button"
           >
             Submit
           </button>

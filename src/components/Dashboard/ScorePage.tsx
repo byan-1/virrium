@@ -7,7 +7,6 @@ import { setCurQuestion } from "../../actions";
 import { QAPIResp } from "../../@types";
 import Header from "../Header";
 import { connect } from "react-redux";
-import questionReducer from "../../reducers/questionReducer";
 
 interface Params {
   cid: string;

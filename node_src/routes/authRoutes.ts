@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Request, Response, NextFunction } from "express";
 import { UserType, Info } from "../@types";
 const express = require("express");
@@ -13,7 +14,7 @@ const EMAILUSED_ERRMSG = "Email in use";
 router.get(
   "/google",
   passport.authenticate("google", {
-    scope: ["profile"]
+    scope: ["profile"],
   })
 );
 
@@ -21,7 +22,7 @@ router.get(
   "/google/callback",
   passport.authenticate("google", {
     successRedirect: "/dashboard",
-    failureRedirect: "/signin"
+    failureRedirect: "/signin",
   })
 );
 
@@ -31,7 +32,7 @@ router.get(
   "/facebook/callback",
   passport.authenticate("facebook", {
     successRedirect: "/dashboard",
-    failureRedirect: "/signin"
+    failureRedirect: "/signin",
   })
 );
 
@@ -52,7 +53,7 @@ router.post(
         res.status(401).send(info);
         return;
       }
-      req.logIn(user, err => {
+      req.logIn(user, (err) => {
         if (err) {
           next(err);
           return;
@@ -81,13 +82,11 @@ router.post(
       }
 
       const hashedPassword = await EmailAuth.hashPassword(password);
-
-      const user = await User.query()
-        .insert({})
-        .returning("*");
-
+      console.log(User.query);
+      console.log(EmailAuth.query);
+      const user = await User.query().insert({}).returning("*");
       await user
-        .$relatedQuery("eauth")
+        .$relatedQuery("emailauth")
         .insert({ email, password: hashedPassword });
 
       req.login({ id: user.id }, (err: Error): void => {
@@ -98,6 +97,7 @@ router.post(
         return;
       });
     } catch (err) {
+      console.log(err);
       next(err);
     }
   }

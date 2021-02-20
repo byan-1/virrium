@@ -1,7 +1,8 @@
+// @ts-nocheck
 /* eslint-disable @typescript-eslint/explicit-member-accessibility */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/array-type */
-import { Model, RelationMappings, JsonSchema } from "objection";
+import { Model, RelationMappings, JSONSchema } from "objection";
 import {
   MIN_QSETNAME_LENGTH,
   MAX_QSETNAME_LENGTH,
@@ -45,7 +46,7 @@ export default class QuestionSet extends Model {
     };
   }
 
-  static get jsonSchema(): JsonSchema {
+  static get jsonSchema(): JSONSchema {
     return {
       type: "object",
       required: ["name"],

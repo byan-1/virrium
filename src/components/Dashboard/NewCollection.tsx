@@ -65,7 +65,7 @@ class NewCollection extends PureComponent<
       <div>
         <Header />
         <div className="container">
-          <h1 className="title">Create a new collection</h1>
+          <h1 className="title move-top">Create a new collection</h1>
           <CollectionForm
             btnText="Create"
             submitAction={this.createCollection}

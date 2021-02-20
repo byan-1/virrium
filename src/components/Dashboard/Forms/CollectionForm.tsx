@@ -27,11 +27,11 @@ function CollectionForm({
   useEffect((): void => {});
   return (
     <form onSubmit={handleSubmit(submitAction)}>
-      <button className="button is-dark is-medium formbtn is-outlined">
+      <button className="button submit is-dark is-medium formbtn is-outlined move-top">
         {btnText}
       </button>
       <fieldset className="field">
-        <label className="label">Name</label>
+        <label className="label namelabel">Name</label>
         <div className="control">
           <Field
             name="title"

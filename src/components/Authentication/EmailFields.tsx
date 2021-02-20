@@ -29,7 +29,7 @@ const pageOptions = {
   },
   signup: {
     btnText: "Sign Up",
-    requestLink: SIGNUP_PATH,
+    requestLink: "/auth" + SIGNUP_PATH,
   },
 };
 

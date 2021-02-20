@@ -20,7 +20,10 @@ function Landing(): ReactNode {
                 <span className="navbar-item"></span>
                 <span className="navbar-item"></span>
                 <span className="navbar-item">
-                  <Link className="button is-white is-outlined" to="/signin">
+                  <Link
+                    className="button is-white is-medium is-outlined"
+                    to="/signin"
+                  >
                     <span className="icon">
                       <i className="fas fa-user"></i>
                     </span>
@@ -29,7 +32,7 @@ function Landing(): ReactNode {
                 </span>
                 <span className="navbar-item">
                   <a
-                    className="button is-white is-outlined"
+                    className="button is-white is-outlined is-medium"
                     href="https://github.com/sleples/virrium"
                   >
                     <span className="icon">
@@ -48,8 +51,11 @@ function Landing(): ReactNode {
         <div className="container has-text-centered">
           <div className="column is-6 is-offset-3">
             <h1 className="title">Virrium</h1>
-            <h2 className="subtitle">Learn any subject by quizzing yourself</h2>
-            <Link className="button is-large is-white is-outlined" to="/signin">
+            <h2 className="subtitle">Quiz yourself</h2>
+            <Link
+              className="button is-large is-white is-outlined start"
+              to="/signin"
+            >
               Get Started
             </Link>
           </div>

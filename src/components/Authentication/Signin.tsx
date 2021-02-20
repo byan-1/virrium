@@ -20,7 +20,7 @@ function Signin(): ReactElement {
             <div className="column">
               <EmailFields page={SIGNIN_PAGE} />
             </div>
-            <div className="column is-half">
+            <div className="column is-half auth">
               <OAuthButtons />
             </div>
           </div>

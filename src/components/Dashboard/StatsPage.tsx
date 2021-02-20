@@ -137,7 +137,7 @@ class StatsPage extends PureComponent<
   private renderPerf = (): JSX.Element[] => {
     return this.setActiveCollections(this.searchFilter()).map(
       (question: any): JSX.Element => (
-        <div className="box" key={question.id}>
+        <div className="box stats" key={question.id}>
           <nav className="level is-mobile">
             <div className="level-item has-text-centered">
               <div>

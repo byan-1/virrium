@@ -115,6 +115,33 @@ class Collection extends PureComponent<
         <div key={collection.id} className="box question-area">
           <div className="set-title"> {collection.name}</div>
           <p className="action-buttons">
+            <Link
+              to={`/practice/${collection.id}`}
+              className="button is-medium is-link is-outlined"
+              title="Practice"
+            >
+              <span className="icon is-small">
+                <i className="fa fa-keyboard" />
+              </span>
+            </Link>
+            <Link
+              to={`/collection/${collection.id}`}
+              className="button is-medium is-link is-outlined"
+              title="Edit"
+            >
+              <span className="icon is-small">
+                <i className="fa fa-cog" />
+              </span>
+            </Link>
+            <Link
+              to={`/stats/${collection.id}`}
+              className="button is-medium is-link is-outlined"
+              title="Details"
+            >
+              <span className="icon is-small">
+                <i className="fa fa-signal" />
+              </span>
+            </Link>
             <Popup
               trigger={
                 <button
@@ -144,7 +171,7 @@ class Collection extends PureComponent<
                         this.removeCollection(collection.id)
                       }
                       title="Delete"
-                      className="button is-large is-danger"
+                      className="button formButton is-large is-danger"
                     >
                       Delete
                     </button>
@@ -153,7 +180,7 @@ class Collection extends PureComponent<
                         close();
                       }}
                       title="Cancel"
-                      className="button is-large is-dark"
+                      className="button formButton is-large is-dark"
                     >
                       Cancel
                     </button>
@@ -161,33 +188,6 @@ class Collection extends PureComponent<
                 </div>
               )}
             </Popup>
-            <Link
-              to={`/stats/${collection.id}`}
-              className="button is-medium is-link is-outlined"
-              title="Details"
-            >
-              <span className="icon is-small">
-                <i className="fa fa-signal" />
-              </span>
-            </Link>
-            <Link
-              to={`/collection/${collection.id}`}
-              className="button is-medium is-link is-outlined"
-              title="Edit"
-            >
-              <span className="icon is-small">
-                <i className="fa fa-cog" />
-              </span>
-            </Link>
-            <Link
-              to={`/practice/${collection.id}`}
-              className="button is-medium is-link is-outlined"
-              title="Practice"
-            >
-              <span className="icon is-small">
-                <i className="fa fa-keyboard" />
-              </span>
-            </Link>
           </p>
         </div>
       )
@@ -236,7 +236,7 @@ class Collection extends PureComponent<
 
   public render(): ReactNode {
     return (
-      <div className="container">
+      <div className="container collections">
         <nav className="panel">{this.renderCollections()}</nav>
         {this.renderPaginate()}
       </div>

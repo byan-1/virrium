@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/explicit-member-accessibility */
-/* eslint-disable @typescript-eslint/no-var-requires */
-import { Model, RelationMappings, JsonSchema } from "objection";
+const { Model } = require("objection");
+import { RelationMappings, JSONSchema } from "objection";
 import QuestionSet from "./QuestionSet";
 import { QSetResp, QSet } from "../../src/common-utils/lib/QSetHelpers";
 import { QuestionRequest } from "@types";
@@ -15,13 +13,13 @@ const QSET_RELATION = "questionset";
 
 type AuthTypes = "googleauth" | "facebookauth";
 
-export default class User extends Model {
+class User extends Model {
   id!: number;
   static get tableName(): string {
     return "users";
   }
 
-  static get jsonSchema(): JsonSchema {
+  static get jsonSchema(): JSONSchema {
     return {
       type: "object",
       properties: {
@@ -51,7 +49,7 @@ export default class User extends Model {
           to: "fbauth.uid",
         },
       },
-      eauth: {
+      emailauth: {
         relation: Model.HasOneRelation,
         modelClass: EmailAuth,
         join: {
@@ -79,9 +77,16 @@ export default class User extends Model {
   }
 
   static async insertUser(auth?: Auth) {
+    const GAuth = require("./GAuth");
+    const FBAuth = require("./FBAuth");
     const user = await User.query().insert({}).returning("*");
     if (auth) {
-      await user.$relatedQuery(auth.type);
+      console.log(auth);
+      //await user.$relatedQuery(auth.type);
+      if (auth.type === "googleauth")
+        await GAuth.query().insert({ uid: user.id, googleid: auth.id });
+      if (auth.type === "facebookauth")
+        await FBAuth.query().insert({ uid: user.id, fbid: auth.id });
     }
     return user;
   }
@@ -90,9 +95,7 @@ export default class User extends Model {
     title: string,
     questions: Array<QuestionRequest> = []
   ): Promise<QuestionSet> {
-    const qset: QuestionSet = await this.$relatedQuery<QuestionSet>(
-      QSET_RELATION
-    )
+    const qset: QuestionSet = await this.$relatedQuery(QSET_RELATION)
       .insert({ name: title })
       .returning("*");
     await Promise.all(
@@ -106,3 +109,5 @@ export default class User extends Model {
     return qset;
   }
 }
+
+module.exports = User;

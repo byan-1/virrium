@@ -32,7 +32,7 @@ const QuestionForm = (props: OwnProps & InjectedFormProps): ReactElement => {
       />
       <button
         type="submit"
-        className="button is-dark is-medium formbtn is-outlined"
+        className="button is-dark is-medium formbtn is-outlined float-right"
       >
         Add Question
       </button>
